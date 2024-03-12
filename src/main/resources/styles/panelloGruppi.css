@@ -1,0 +1,36 @@
+.root {
+    -fx-font-family: 'Poppins', sans-serif;
+    -fx-font-size: 16px;
+    -fx-background-color: #26282b;
+    -fx-text-fill: white;
+}
+
+.pulsanti-gruppi{
+    -fx-pref-height: 40px;
+    -fx-pref-width: USE_COMPUTED_SIZE;
+
+}
+.label{
+
+    -fx-background-radius: 15px;
+    -fx-background-color: #26282b;
+    -fx-background-opacity: 0.9;
+    -fx-label-padding: 5px;
+
+}
+.immagine-profilo {
+    -fx-shape: "M50,0 A50,50 0 1,1 50,100 A50,50 0 1,1 50,0";
+    -fx-background-color: grey;
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+    -fx-background-image: url("/Users/Francesco/Desktop/UninaSocialGroup/src/main/resources/Immagini/francesco.jpg");
+}
+#corner-style {
+    -fx-border-radius: 0 10px 10px 0;
+    -fx-background-radius: 0 10px 10px 0;
+}

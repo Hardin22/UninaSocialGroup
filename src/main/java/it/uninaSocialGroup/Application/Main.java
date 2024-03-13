@@ -7,11 +7,14 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        FontIcon icon = new FontIcon(FontAwesomeSolid.SEARCH);
         Font.loadFont(getClass().getResource("/fonts/Poppins/Poppins-Regular.ttf").toExternalForm(), 14);
         Image applicationIcon = new Image(getClass().getResourceAsStream("/Immagini/copialogo.png"));
         primaryStage.getIcons().add(applicationIcon);

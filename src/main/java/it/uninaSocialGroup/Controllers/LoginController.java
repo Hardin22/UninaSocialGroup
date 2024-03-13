@@ -71,7 +71,7 @@ public class LoginController {
 
     private void loadMainScene() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ui/principale.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/ui/principale3.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
 

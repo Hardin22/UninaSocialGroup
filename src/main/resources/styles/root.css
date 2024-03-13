@@ -6,6 +6,10 @@
 .testoBianco{
     -fx-fill: #E0E0E0;
 }
+.Text {
+
+    -fx-fill: #E0E0E0;
+}
 .button {
     -fx-background-color: #1b1d1f;
     -fx-text-fill: #E0E0E0;
@@ -103,4 +107,27 @@
     -fx-background-radius: 20px;
     -fx-background-color: -fx-primary-color;
 
+}
+.scroll-pane {
+    -fx-border-width: 0px;
+}
+.scroll-pane .viewport {
+     -fx-background-color: #1b1d1f;
+    -fx-border-radius: 10 10 10 10;
+}
+
+.scroll-pane:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+#paneCentrale .scroll-pane .viewport {
+    -fx-background-color: #1b1d1f;
+}
+.Icone {
+    -ikonli-icon-size: 20px; /* Rendere le icone leggermente più grandi */
+    -fx-padding: 0 0 0 10; /* Aggiungere del margine a sinistra */
+    -ikonli-icon-color: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); /* Applicare lo stesso gradiente di colore di .coloredText */
+}
+#proPic {
+    -fx-background-radius: 15;
 }

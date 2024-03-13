@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -12,8 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.Label?>
-<GridPane fx:controller="it.uninaSocialGroup.Controllers.RegistratiController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="614.0" prefWidth="747.0" style="-fx-background-color: #26282b;" stylesheets="@../styles/root.css" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="747.0" style="-fx-background-color: #26282b;" stylesheets="@../styles/root.css" vgap="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.uninaSocialGroup.Controllers.RegistratiController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
   </columnConstraints>
@@ -43,32 +43,32 @@
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <children>
             <TextField fx:id="nameField" prefHeight="26.0" prefWidth="240.0" promptText="nome" />
-            <TextField fx:id="surnameField" prefHeight="26.0" prefWidth="240.0" promptText="cognome"/>
+            <TextField fx:id="surnameField" prefHeight="26.0" prefWidth="240.0" promptText="cognome" />
          </children>
       </HBox>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="coloredText" text="Registrati" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
       <HBox alignment="CENTER" layoutX="157.0" layoutY="191.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="7">
          <children>
-            <DatePicker fx:id="birthdateField" promptText="data di nascita" />
-            <TextField fx:id="matricolaField" prefHeight="26.0" prefWidth="191.0" promptText="matricola" />
+            <DatePicker fx:id="birthdateField" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="33.0" prefWidth="190.0" promptText="data di nascita" />
+            <TextField fx:id="matricolaField" prefHeight="26.0" prefWidth="190.0" promptText="matricola" />
          </children>
       </HBox>
       <PasswordField fx:id="confirmPasswordField" maxWidth="-Infinity" prefWidth="490.0" promptText="conferma password" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
       <TextField fx:id="usernameField" maxWidth="-Infinity" prefHeight="26.0" prefWidth="490.0" promptText="nome utente" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-      <Button onAction="#handleCreateAccount" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" text="Registrati" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
-       <Text styleClass="testoBianco" strokeType="OUTSIDE" strokeWidth="0.0" text="Hai già un account? " wrappingWidth="500.0" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.valignment="BOTTOM" textAlignment="CENTER"/>
-       <Button onAction="#switchToLogin" mnemonicParsing="false" prefHeight="36.0" prefWidth="157.0" style="-fx-background-color: transparent;" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="BOTTOM" >
+      <Button mnemonicParsing="false" onAction="#handleCreateAccount" prefHeight="26.0" prefWidth="140.0" text="Registrati" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
+       <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="testoBianco" text="Hai già un account? " textAlignment="CENTER" wrappingWidth="500.0" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.valignment="BOTTOM" />
+       <Button mnemonicParsing="false" onAction="#switchToLogin" prefHeight="36.0" prefWidth="157.0" style="-fx-background-color: transparent;" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="BOTTOM">
           <graphic>
             <Text styleClass="coloredText" text="Accedi" />
          </graphic>
       </Button>
 
-      <Button onAction="#handleChooseProfilePicture" mnemonicParsing="false" style="-fx-background-color: transparent;" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER">
+      <Button mnemonicParsing="false" onAction="#handleChooseProfilePicture" style="-fx-background-color: transparent;" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER">
           <graphic>
               <Text styleClass="coloredText" text="Imposta foto profilo" />
           </graphic>
       </Button>
-       <Label fx:id="errorLabel" styleClass="errore" text="" GridPane.rowIndex="12" GridPane.valignment="CENTER" GridPane.halignment="CENTER" textAlignment="CENTER"/>
+       <Label fx:id="errorLabel" styleClass="errore" text="" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="12" GridPane.valignment="CENTER" />
    </children>
 
 </GridPane>

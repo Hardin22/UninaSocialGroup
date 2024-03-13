@@ -1,4 +1,4 @@
-package it.uninaSocialGroup.Oggetti;
+package it.uninaSocialGroup.Utils;
 import it.uninaSocialGroup.Utils.DBUtil;
 import it.uninaSocialGroup.Utils.GoogleDriveService;
 import javafx.event.ActionEvent;
@@ -24,6 +24,13 @@ public class userValidator {
         }
     }
 
+
+    //LoginController
+
+
+
+
+    //RegistratiController
 
     public String validateUsername(String username) {
         if (username.isEmpty()) {

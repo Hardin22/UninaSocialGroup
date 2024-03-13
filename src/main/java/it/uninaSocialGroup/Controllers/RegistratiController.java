@@ -23,7 +23,7 @@ import java.time.LocalDate;
 
 import it.uninaSocialGroup.Utils.GoogleDriveService;
 import javafx.stage.FileChooser;
-import it.uninaSocialGroup.Oggetti.userValidator;
+import it.uninaSocialGroup.Utils.userValidator;
 import org.apache.tika.Tika;
 
 public class RegistratiController {
@@ -49,44 +49,7 @@ public class RegistratiController {
     private userValidator validator = new userValidator();
     private File selectedProfilePicture;
 
-    @FXML
-    public void handleChooseProfilePicture(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        selectedProfilePicture = fileChooser.showOpenDialog(null);
-    }
 
-    private String uploadProfilePicture() {
-        if (selectedProfilePicture == null) {
-            return "";
-        }
-
-        GoogleDriveService googleDriveService;
-        try {
-            googleDriveService = new GoogleDriveService();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Errore durante la creazione del servizio Google Drive";
-        }
-
-        String mimeType;
-        try {
-            Tika tika = new Tika();
-            mimeType = tika.detect(selectedProfilePicture);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Errore durante la determinazione del tipo MIME del file";
-        }
-
-        String result;
-        try {
-            result = googleDriveService.uploadFile(selectedProfilePicture, mimeType);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Errore durante l'upload del file";
-        }
-
-        return result;
-    }
 
     @FXML
     public void handleCreateAccount(ActionEvent event) {
@@ -95,6 +58,7 @@ public class RegistratiController {
             profilePictureLink = uploadProfilePicture();
             User newUser = createNewUser(profilePictureLink);
             addUserToDatabase(newUser);
+            loadMainScene();
         }
     }
 
@@ -149,6 +113,44 @@ public class RegistratiController {
 
         return allValid;
     }
+    @FXML
+    public void handleChooseProfilePicture(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        selectedProfilePicture = fileChooser.showOpenDialog(null);
+    }
+
+    private String uploadProfilePicture() {
+        if (selectedProfilePicture == null) {
+            return "";
+        }
+
+        GoogleDriveService googleDriveService;
+        try {
+            googleDriveService = new GoogleDriveService();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Errore durante la creazione del servizio Google Drive";
+        }
+
+        String mimeType;
+        try {
+            Tika tika = new Tika();
+            mimeType = tika.detect(selectedProfilePicture);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Errore durante la determinazione del tipo MIME del file";
+        }
+
+        String result;
+        try {
+            result = googleDriveService.uploadFile(selectedProfilePicture, mimeType);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Errore durante l'upload del file";
+        }
+
+        return result;
+    }
 
     public void addUserToDatabase(User user) {
         Connection conn = null;
@@ -197,6 +199,21 @@ public class RegistratiController {
             primaryStage.setResizable(false);
 
             primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void loadMainScene() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ui/principale2.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+
+            stage.setTitle("Unina Social Group");
+            stage.show();
+
+            // Chiudi la schermata di login
+            ((Stage) usernameField.getScene().getWindow()).close();
         } catch (IOException e) {
             e.printStackTrace();
         }

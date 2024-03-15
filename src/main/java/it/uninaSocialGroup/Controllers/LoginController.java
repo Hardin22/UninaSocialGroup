@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import it.uninaSocialGroup.Oggetti.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +18,7 @@ import javafx.scene.control.TextField;
 import it.uninaSocialGroup.Utils.DBUtil;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import it.uninaSocialGroup.Controllers.globalController;
 public class LoginController {
 
     @FXML
@@ -27,8 +30,11 @@ public class LoginController {
     @FXML
     private Label errorLabel;
 
+    private User currentUser;
+
     @FXML
     protected void handleLogin(ActionEvent event) {
+
         String username = usernameField.getText();
         String password = passwordField.getText();
 
@@ -37,6 +43,7 @@ public class LoginController {
         if (errorMessage != null) {
             showError(errorMessage);
         } else {
+            getCurrentUser(username);
             loadMainScene();
         }
     }
@@ -69,21 +76,6 @@ public class LoginController {
         }
     }
 
-    private void loadMainScene() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ui/principale3.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-
-            stage.setTitle("Unina Social Group");
-            stage.show();
-
-            // Chiudi la schermata di login
-            ((Stage) usernameField.getScene().getWindow()).close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private int isLoginValid(String username, String password) {
         Connection conn = null;
@@ -136,6 +128,85 @@ public class LoginController {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public User getCurrentUser(String username) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtil.getConnection();
+
+            String sql = "SELECT * FROM users WHERE nomeUtente = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, username);
+
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String nomeUtente = rs.getString("nomeUtente");
+                System.out.println("nomeUtente: " + nomeUtente);
+
+                String nome = rs.getString("nome");
+                System.out.println("nome: " + nome);
+
+                String cognome = rs.getString("cognome");
+                System.out.println("cognome: " + cognome);
+
+                String email = rs.getString("email");
+                System.out.println("email: " + email);
+
+                String password = rs.getString("password");
+                System.out.println("password: " + password);
+
+                String matricola = rs.getString("matricola");
+                System.out.println("matricola: " + matricola);
+
+                String fotoprofilo = rs.getString("fotoprofilo");
+                System.out.println("fotoprofilo: " + fotoprofilo);
+
+                currentUser = new User(nomeUtente, nome, cognome, email, password, rs.getDate("dataDiNascita").toLocalDate(), matricola, fotoprofilo);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return currentUser;
+    }
+
+    private void loadMainScene() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/principale3.fxml"));
+            Parent root = loader.load();
+
+            globalController globalController = (globalController) loader.getController();
+            globalController.setCurrentUser(currentUser);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+
+            stage.setTitle("Unina Social Group");
+            stage.show();
+
+            ((Stage) usernameField.getScene().getWindow()).close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     @FXML

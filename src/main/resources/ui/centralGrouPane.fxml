@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<Button alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" mnemonicParsing="false" style="-fx-background-color: transparent;" textAlignment="JUSTIFY" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <graphic>
+      <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="755.0" style="-fx-border-radius: 20px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-background-radius: 20px;">
+         <padding>
+            <Insets bottom="10.0" left="10.0" top="10.0" />
+         </padding>
+         <children>
+            <Rectangle fx:id="ActiveGroupPic" arcHeight="70.0" arcWidth="70.0" height="70.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="70.0" />
+            <VBox alignment="CENTER_LEFT" prefHeight="235.0" prefWidth="656.0" spacing="10.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="ActiveGroupName" text="" />
+                  <HBox prefHeight="21.0" prefWidth="521.0" spacing="30.0">
+                     <children>
+                        <Label style="-fx-text-fill: rgba(255,255,255, 0.4);" text="partecipanti:" />
+                        <Label style="-fx-text-fill: rgba(255,255,255, 0.4);" text="online:" />
+                     </children>
+                  </HBox>
+               </children>
+               <HBox.margin>
+                  <Insets left="15.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </graphic>
+</Button>

@@ -120,14 +120,16 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
-#paneCentrale .scroll-pane .viewport {
-    -fx-background-color: #1b1d1f;
+.viewport-style .viewport {
+    -fx-background-color: #26282b;
 }
 .Icone {
-    -ikonli-icon-size: 20px; /* Rendere le icone leggermente più grandi */
-    -fx-padding: 0 0 0 10; /* Aggiungere del margine a sinistra */
-    -ikonli-icon-color: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); /* Applicare lo stesso gradiente di colore di .coloredText */
+    -ikonli-icon-size: 25px;
+    -fx-padding: 0 0 0 10;
+    -ikonli-icon-color: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);;
 }
 #proPic {
     -fx-background-radius: 15;
+    -fx-background-insets: 0;
+    -fx-background-position: center;
 }

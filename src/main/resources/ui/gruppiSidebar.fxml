@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Rectangle?>
+<Button mnemonicParsing="false" prefHeight="60.0" prefWidth="245.0">
+    <graphic>
+        <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="156.0" style="-fx-background-radius: 24px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-border-radius: 26px;">
+            <children>
+                <Rectangle arcHeight="40.0" arcWidth="70.0" height="40.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="41.0" />
+                <Label text="">
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                </Label>
+            </children>
+            <padding>
+                <Insets left="4.0" />
+            </padding>
+        </HBox>
+    </graphic>
+    <VBox.margin>
+        <Insets right="-20.0" />
+    </VBox.margin>
+    <padding>
+        <Insets right="-40.0" />
+    </padding>
+</Button>

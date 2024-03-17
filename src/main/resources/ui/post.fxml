@@ -48,7 +48,12 @@
             <Insets left="4.0" />
          </padding>
          <children>
-            <Button mnemonicParsing="false" text="&lt;3" />
+            <Button mnemonicParsing="false" onAction="#incrementLikeNumber" text="&lt;3" />
+            <Label fx:id="likeNumber" prefHeight="20.0" prefWidth="32.0" text="0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
             <Button mnemonicParsing="false" text="..." />
          </children>
          <VBox.margin>

@@ -149,3 +149,7 @@
     -fx-background-radius: 15px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0, 0, 0);
 }
+
+.choice-box .context-menu .menu-item {
+    -fx-background-color: rgba(255,255,255,0.2);
+}

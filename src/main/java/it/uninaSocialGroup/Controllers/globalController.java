@@ -1,15 +1,18 @@
 package it.uninaSocialGroup.Controllers;
 
-import it.uninaSocialGroup.Oggetti.Group;
 import it.uninaSocialGroup.Oggetti.User;
 import it.uninaSocialGroup.Utils.DBUtil;
-import javafx.animation.TranslateTransition;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -19,18 +22,23 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
 import it.uninaSocialGroup.Utils.FileUploadUtility;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class globalController {
     private User currentUser;
     @FXML
     private VBox createPost;
+    @FXML
+    private VBox createGroup;
+    @FXML
+    private ChoiceBox<String> monthChoice;
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
@@ -38,8 +46,11 @@ public class globalController {
         connectToDatabase();
         initializeSlidePanel();
         createPost.setVisible(false);
+        createGroup.setVisible(false);
+        reportPanel.setVisible(false);
         showProfileOrGroupList(currentUser.getProfilePictureLink(), currentUser.getNomeUtente(), usernameAlto, proPic, 70, 70);
         getGroupsFromDatabaseAndDisplay();
+        monthChoice.getItems().addAll("Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre");
     }
 
     @FXML
@@ -47,7 +58,7 @@ public class globalController {
     @FXML
     private BorderPane borderPane;
     @FXML
-    private StackPane rightStackPane;
+    private VBox rightVBox;
     @FXML
     private ScrollPane centerScrollPane;
     @FXML
@@ -58,6 +69,8 @@ public class globalController {
     private Button newPostButton;
     @FXML
     private Label path;
+    @FXML
+    private VBox reportPanel;
 
     @FXML
     private TextArea postContent;
@@ -101,7 +114,7 @@ public class globalController {
     }
 
     public void initializeSlidePanel() {
-        rightStackPane.widthProperty().addListener((observable, oldValue, newValue) -> {
+        rightVBox.widthProperty().addListener((observable, oldValue, newValue) -> {
             double newStackPaneWidth = newValue.doubleValue();
             double newCenterWidth = borderPane.getWidth() - newStackPaneWidth;
 
@@ -113,9 +126,9 @@ public class globalController {
     @FXML
     public void toggleVBox() {
         if (isVBoxOpen) {
-            rightStackPane.setPrefWidth(35); // chiude il VBox
+            rightVBox.setPrefWidth(35); // chiude il VBox
         } else {
-            rightStackPane.setPrefWidth(240); // apre il VBox, supponendo che la larghezza originale sia 200
+            rightVBox.setPrefWidth(240); // apre il VBox, supponendo che la larghezza originale sia 200
         }
         isVBoxOpen = !isVBoxOpen; // aggiorna lo stato del VBox
     }
@@ -205,13 +218,15 @@ public class globalController {
 
 
     private void handleGroupButtonClick(String buttonId) {
+        reportPanel.setVisible(false);
+        createGroup.setVisible(false);
+        homePanel.setVisible(false);
         idActiveGroup = Integer.parseInt(buttonId);
         loadCentralComponent(buttonId);
         getPostsFromDatabase(idActiveGroup);
         postContent.clear();
         path.setText("");
         createPost.setVisible(false);
-        //rende visibile il componente creaPost solo se non ce ne sono altri
         newPostButton.setVisible(true);
     }
     @FXML
@@ -236,13 +251,15 @@ public class globalController {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
+                    int idPost = resultSet.getInt("id");
                     String author = resultSet.getString("author_username");
                     String text = resultSet.getString("content");
                     String postPicture = resultSet.getString("postPicture");
                     String userProfilePicture = resultSet.getString("user_profile_picture");
                     Timestamp timestamp = resultSet.getTimestamp("timestamp");
+                    int likeNumber = resultSet.getInt("numero_like");
 
-                    createAndLoadPostComponent(author, text, postPicture, userProfilePicture, timestamp.toString());
+                    createAndLoadPostComponent(author, text, postPicture, userProfilePicture, timestamp.toString(), idPost, likeNumber);
                 }
             }
         } catch (SQLException e) {
@@ -263,7 +280,7 @@ public class globalController {
    private VBox postBox;
 
     @FXML
-    private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp) {
+    private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp, int idPost, int likeNumber) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/post.fxml"));
             fxmlLoader.setController(this);
@@ -272,7 +289,6 @@ public class globalController {
             Node postComponent = fxmlLoader.load();
             mainviewVbox.getChildren().add(0, postComponent);
 
-
             showProfileOrGroupList(userProfilePicture, author, authorName, authorPic, 40, 40);
 
             if (postPicture == null || postPicture.equals("")) {
@@ -280,12 +296,34 @@ public class globalController {
             } else {
                 showProfileOrGroupList(postPicture, null, null, postPic, 457, 457);
             }
+            this.LikeNumber.setText(String.valueOf(likeNumber));
+            postComponent.setId(String.valueOf(idPost));
             postText.setText(text);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    @FXML
+    private Label LikeNumber;
+    @FXML
+    private void incrementLikeNumber(ActionEvent e) {
+        Node postComponent = (Node) e.getSource();
+        String postId = postComponent.getId();
+        handleLikeButton(postId);
+        this.LikeNumber.setText(String.valueOf(Integer.parseInt(LikeNumber.getText()) + 1));
+    }
+    private void handleLikeButton(String postId) {
+        String query = "UPDATE Posts SET numero_like = numero_like + 1 WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, Integer.parseInt(postId));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+    private Node groupComponent;
 
     private void loadCentralComponent(String buttonId) {
         try {
@@ -293,7 +331,7 @@ public class globalController {
             fxmlLoader.setController(this);
 
             // Caricamento del componente
-            Node groupComponent = fxmlLoader.load();
+            groupComponent = fxmlLoader.load();
 
             // Rimozione del primo figlio se è un Button (se lo è significa che c'è un gruppo attivo)
             if (centerVBox.getChildren().get(0) instanceof Button) {
@@ -353,6 +391,10 @@ public class globalController {
         createPost.setVisible(false);
 
     }
+    @FXML
+    private void deletePath(){
+        path.setText("");
+    }
 
 
     private void uploadPost(int groupId, User currentUser) {
@@ -366,7 +408,6 @@ public class globalController {
             postPictureLink = fileUploadUtility.uploadProfilePicture();
         }
 
-        // Genera un nuovo timestamp ogni volta che il metodo viene chiamato
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         String sql = "INSERT INTO Posts (content, postpicture, author_username, user_profile_picture, timestamp, group_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -387,5 +428,148 @@ public class globalController {
         mainviewVbox.getChildren().clear();
         getPostsFromDatabase(groupId);
     }
+
+
+    //LOGICA DI CREAZIONE GRUPPO
+    @FXML
+    private TextField groupName;
+    @FXML
+    private TextField groupCategory;
+    @FXML
+    private TextArea groupDescription;
+    @FXML
+    private Label errorMessage;
+    @FXML
+    private Label groupPicPath;
+    @FXML
+    private void goback(){
+        groupName.clear();
+        groupCategory.clear();
+        groupDescription.clear();
+        groupPicPath.setText("");
+        createGroup.setVisible(false);
+        showHomePanel();
+    }
+    @FXML
+    private void showCreateGroupPanel() {
+        reportPanel.setVisible(false);
+        homePanel.setVisible(false);
+        newPostButton.setVisible(false);
+        createGroup.setVisible(true);
+        if (centerVBox.getChildren().get(0) instanceof Button) {
+            centerVBox.getChildren().remove(0);
+        }
+    }
+
+    @FXML
+    private void deleteFilePath(){
+        groupPicPath.setText("");
+    }
+    private FileUploadUtility groupPhotoUploader = new FileUploadUtility();
+    private String selectedGroupPhotoPath;
+
+    @FXML
+    private void selectGroupImage() {
+        groupPhotoUploader.chooseProfilePicture();
+        selectedGroupPhotoPath = groupPhotoUploader.getSelectedProfilePicturePath();
+        groupPicPath.setText(selectedGroupPhotoPath);
+    }
+    @FXML
+    private void createGroup() {
+        String groupName = this.groupName.getText();
+        String groupCategory = this.groupCategory.getText();
+        String groupDescription = this.groupDescription.getText();
+
+        if (groupName.isEmpty() || groupCategory.isEmpty() || groupDescription.isEmpty()){
+            errorMessage.setText("I campi nome, categoria e descrizione non possono essere vuoti");
+            return;
+        }
+
+        String groupPhotoLink = "";
+        if (!groupPicPath.getText().isEmpty()){
+            groupPhotoLink = groupPhotoUploader.uploadProfilePicture();
+        } else {
+            // Imposta l'immagine di default se non è stata selezionata alcuna immagine
+            groupPhotoLink = getClass().getResource("/Immagini/groupDefaultImage.png").toExternalForm();
+        }
+
+        String sql = "INSERT INTO gruppi (nome, nomeCreatore, descrizione, categoria, dataCreazione, fotoGruppo) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, groupName);
+            stmt.setString(2, currentUser.getNomeUtente());
+            stmt.setString(3, groupDescription);
+            stmt.setString(4, groupCategory);
+            stmt.setDate(5, new java.sql.Date(System.currentTimeMillis()));
+            stmt.setString(6, groupPhotoLink);
+            stmt.executeUpdate();
+
+            // Recupera l'ID del gruppo appena creato
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int groupId = generatedKeys.getInt(1);
+
+                String sqlGroupMembers = "INSERT INTO group_members (id_gruppo, nomeUtente) VALUES (?, ?)";
+                try (PreparedStatement stmtGroupMembers = connection.prepareStatement(sqlGroupMembers)) {
+                    stmtGroupMembers.setInt(1, groupId);
+                    stmtGroupMembers.setString(2, currentUser.getNomeUtente());
+                    stmtGroupMembers.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        this.groupName.clear();
+        this.groupCategory.clear();
+        this.groupDescription.clear();
+        groupPicPath.setText("");
+        createGroup.setVisible(false);
+        leftVBox.getChildren().clear();
+        getGroupsFromDatabaseAndDisplay();
+
+        homePanel.setVisible(true);
+    }
+
+
+    //HOME SCREEN
+    @FXML
+    private VBox homePanel;
+
+    @FXML
+    private void showHomePanel() {
+        reportPanel.setVisible(false);
+        createGroup.setVisible(false);
+        newPostButton.setVisible(false);
+        homePanel.setVisible(true);
+        if (centerVBox.getChildren().get(0) instanceof Button) {
+            centerVBox.getChildren().remove(0);
+        }
+    }
+
+    @FXML
+    private void segrepass(){
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.segrepass1.unina.it"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void docentiUnina(){
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.docenti.unina.it"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void showReportPanel() {
+        homePanel.setVisible(false);
+        createGroup.setVisible(false);
+        reportPanel.setVisible(true);
+        if (centerVBox.getChildren().get(0) instanceof Button) {
+            centerVBox.getChildren().remove(0);
+        }
+    }
+
 
 }

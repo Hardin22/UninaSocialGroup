@@ -147,25 +147,18 @@ public class LoginController {
 
             if (rs.next()) {
                 String nomeUtente = rs.getString("nomeUtente");
-                System.out.println("nomeUtente: " + nomeUtente);
 
                 String nome = rs.getString("nome");
-                System.out.println("nome: " + nome);
 
                 String cognome = rs.getString("cognome");
-                System.out.println("cognome: " + cognome);
 
                 String email = rs.getString("email");
-                System.out.println("email: " + email);
 
                 String password = rs.getString("password");
-                System.out.println("password: " + password);
 
                 String matricola = rs.getString("matricola");
-                System.out.println("matricola: " + matricola);
 
                 String fotoprofilo = rs.getString("fotoprofilo");
-                System.out.println("fotoprofilo: " + fotoprofilo);
 
                 currentUser = new User(nomeUtente, nome, cognome, email, password, rs.getDate("dataDiNascita").toLocalDate(), matricola, fotoprofilo);
             }

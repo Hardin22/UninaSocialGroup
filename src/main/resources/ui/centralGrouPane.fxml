@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<Button alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" mnemonicParsing="false" style="-fx-background-color: transparent;" textAlignment="JUSTIFY" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Button alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="113.0" mnemonicParsing="false" prefHeight="113.0" style="-fx-background-color: transparent;" textAlignment="JUSTIFY" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <graphic>
       <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="755.0" style="-fx-border-radius: 20px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-background-radius: 20px;">
          <padding>

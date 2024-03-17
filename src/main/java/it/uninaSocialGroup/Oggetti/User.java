@@ -83,6 +83,19 @@ public class User {
     public String getProfilePictureLink() {
         return profilePictureLink;
     }
+    @Override
+    public String toString() {
+        return "User{" +
+                "nomeUtente='" + nomeUtente + '\'' +
+                ", nome='" + nome + '\'' +
+                ", cognome='" + cognome + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", dataDiNascita=" + dataDiNascita +
+                ", matricola='" + matricola + '\'' +
+                ", profilePictureLink='" + profilePictureLink + '\'' +
+                '}';
+    }
 
 
 }

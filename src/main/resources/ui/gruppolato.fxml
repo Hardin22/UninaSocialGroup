@@ -6,10 +6,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-
-<Button fx:id="buttonId" mnemonicParsing="false" prefHeight="59.0" prefWidth="215.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Button fx:id="buttonId" minHeight="-Infinity" mnemonicParsing="false" prefHeight="45.0" prefWidth="215.0" style="-fx-border-color: rgba(224, 224, 224, 0.2)t; -fx-background-radius: 24;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <graphic>
-      <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="156.0" style="-fx-background-radius: 24px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-border-radius: 26px;">
+      <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="207.0">
          <children>
             <Rectangle fx:id="rectangleId" arcHeight="40.0" arcWidth="70.0" height="40.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="41.0" />
             <Label fx:id="labelId" style="-fx-background-color: transparent;" text="">
@@ -18,10 +17,6 @@
                </HBox.margin>
             </Label>
          </children>
-         <padding>
-            <Insets left="4.0" />
-         </padding>
       </HBox>
    </graphic>
 </Button>
-

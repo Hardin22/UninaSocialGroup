@@ -25,7 +25,7 @@ import it.uninaSocialGroup.Utils.GoogleDriveService;
 import javafx.stage.FileChooser;
 import it.uninaSocialGroup.Utils.userValidator;
 import org.apache.tika.Tika;
-
+import it.uninaSocialGroup.Utils.FileUploadUtility;
 public class RegistratiController {
     @FXML
     private TextField usernameField;
@@ -45,17 +45,17 @@ public class RegistratiController {
     private DatePicker birthdateField;
     @FXML
     private Label errorLabel;
-
     private userValidator validator = new userValidator();
     private File selectedProfilePicture;
 
 
+    private FileUploadUtility fileUploadUtility = new FileUploadUtility();
 
     @FXML
     public void handleCreateAccount(ActionEvent event) {
         String profilePictureLink = "";
         if (allControlsPassed(profilePictureLink)) {
-            profilePictureLink = uploadProfilePicture();
+            profilePictureLink = fileUploadUtility.uploadProfilePicture();
             User newUser = createNewUser(profilePictureLink);
             addUserToDatabase(newUser);
             loadMainScene();
@@ -113,43 +113,10 @@ public class RegistratiController {
 
         return allValid;
     }
+
     @FXML
     public void handleChooseProfilePicture(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        selectedProfilePicture = fileChooser.showOpenDialog(null);
-    }
-
-    private String uploadProfilePicture() {
-        if (selectedProfilePicture == null) {
-            return "";
-        }
-
-        GoogleDriveService googleDriveService;
-        try {
-            googleDriveService = new GoogleDriveService();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Errore durante la creazione del servizio Google Drive";
-        }
-
-        String mimeType;
-        try {
-            Tika tika = new Tika();
-            mimeType = tika.detect(selectedProfilePicture);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Errore durante la determinazione del tipo MIME del file";
-        }
-
-        String result;
-        try {
-            result = googleDriveService.uploadFile(selectedProfilePicture, mimeType);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Errore durante l'upload del file";
-        }
-
-        return result;
+        fileUploadUtility.chooseProfilePicture();
     }
 
     public void addUserToDatabase(User user) {

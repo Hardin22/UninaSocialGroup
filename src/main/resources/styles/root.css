@@ -14,7 +14,6 @@
     -fx-background-color: #1b1d1f;
     -fx-text-fill: #E0E0E0;
     -fx-background-radius: 20px;
-    -fx-padding: 5px 15px;
 }
 .label {
     -fx-text-fill: #E0E0E0;
@@ -132,4 +131,21 @@
     -fx-background-radius: 15;
     -fx-background-insets: 0;
     -fx-background-position: center;
+}
+.text-area{
+    -fx-text-fill: #E0E0E0;
+    -fx-border-color: rgba(224, 224, 224, 0.2);
+}
+.text-area .content{
+    -fx-background-color: #1b1d1f;
+
+}
+.TextAreaPost .content{
+    -fx-background-color: #26282b;
+}
+.vbox-glass {
+    -fx-background-color: rgb(27, 29, 31);
+    -fx-background-insets: 0;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0, 0, 0);
 }

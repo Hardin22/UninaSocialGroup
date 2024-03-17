@@ -3,13 +3,13 @@ package it.uninaSocialGroup.Controllers;
 import it.uninaSocialGroup.Oggetti.Group;
 import it.uninaSocialGroup.Oggetti.User;
 import it.uninaSocialGroup.Utils.DBUtil;
+import javafx.animation.TranslateTransition;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -19,26 +19,29 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.ScrollPane;
+import javafx.util.Duration;
+import it.uninaSocialGroup.Utils.FileUploadUtility;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class globalController {
     private User currentUser;
+    @FXML
+    private VBox createPost;
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
+        System.out.println(currentUser);
         connectToDatabase();
         initializeSlidePanel();
-        showProfileOrGroupList(currentUser.getProfilePictureLink(), currentUser.getNomeUtente(), usernameAlto, proPic);
+        createPost.setVisible(false);
+        showProfileOrGroupList(currentUser.getProfilePictureLink(), currentUser.getNomeUtente(), usernameAlto, proPic, 70, 70);
         getGroupsFromDatabaseAndDisplay();
     }
+
     @FXML
     private Rectangle proPic;
     @FXML
@@ -51,15 +54,23 @@ public class globalController {
     private Label usernameAlto;
     @FXML
     private VBox leftVBox;
+    @FXML
+    private Button newPostButton;
+    @FXML
+    private Label path;
+
+    @FXML
+    private TextArea postContent;
 
     private boolean isVBoxOpen = true; // supponiamo che il VBox sia aperto all'inizio
     private Connection connection;
     private String link = "https://drive.google.com/uc?export=view&id=1DvpLvwgBZaKlSDmQdgCV1fCfIqhnRWU7";
-    public void showProfileOrGroupList(String profilePictureLink, String username, Label nameLabel, Rectangle imagePlaceholder) {
-        nameLabel.setText(username);
+    public void showProfileOrGroupList(String profilePictureLink, String username, Label nameLabel, Rectangle imagePlaceholder, double width, double height) {
+        if (nameLabel != null){
+            nameLabel.setText(username);
+        }
 
         final String finalProfilePictureLink = profilePictureLink;
-
         Task<Image> loadImageTask = new Task<Image>() {
             @Override
             protected Image call() throws Exception {
@@ -67,7 +78,7 @@ public class globalController {
                 if (link == null || link.equals("")) {
                     link = getClass().getResource("/Immagini/user.png").toExternalForm();
                 }
-                return new Image(link, 70, 70, false, false);
+                return new Image(link, width, height, true, true);
             }
         };
 
@@ -79,8 +90,6 @@ public class globalController {
         });
 
         new Thread(loadImageTask).start();
-
-
     }
 
     public void connectToDatabase() {
@@ -98,6 +107,7 @@ public class globalController {
 
             centerScrollPane.setPrefWidth(newCenterWidth);
         });
+        newPostButton.setVisible(false);
     }
 
     @FXML
@@ -119,6 +129,8 @@ public class globalController {
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, currentUser.getNomeUtente());
+            System.out.println("Debug: getGroupsFromDatabaseAndDisplay -> currentUser: " + currentUser);
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id_gruppo");
@@ -133,7 +145,7 @@ public class globalController {
 
                     Node groupComponent = createGroupComponent(rectangle, String.valueOf(id), label, nome);
                     leftVBox.getChildren().add(groupComponent);
-                    showProfileOrGroupList(fotoGruppo, nome, label, rectangle);
+                    showProfileOrGroupList(fotoGruppo, nome, label, rectangle, 70, 70);
                 }
             }
         } catch (SQLException e) {
@@ -157,19 +169,22 @@ public class globalController {
         // Creazione del button
         Button button = new Button();
         button.setId(buttonId);
-        button.setPrefHeight(59.0);
-        button.setPrefWidth(235.0);
-        button.setStyle("-fx-background-color: transparent; ");
+        button.setPrefHeight(50.0);
+        button.setPrefWidth(212.0);
+        button.setMaxWidth(212.0);
+
+        button.setStyle("-fx-background-radius: 24px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-border-radius: 26px;");
 
 
         // Creazione dell'HBox e aggiunta dei componenti
         HBox hbox = new HBox();
         hbox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        hbox.setPrefHeight(50.0);
-        hbox.setPrefWidth(156.0);
-        hbox.setStyle("-fx-background-radius: 24px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-border-radius: 26px;");
+        hbox.setPrefHeight(42.0);
+        hbox.setPrefWidth(198.0);
+
+        hbox.setStyle("-fx-background-color: transparent; ");
         hbox.getChildren().addAll(rectangle, label);
-        hbox.setPadding(new Insets(0, 0, 0, 4));
+        hbox.setPadding(new Insets(0, 0, 0, -5));
 
         // Impostazione dell'HBox come grafica del button
         button.setGraphic(hbox);
@@ -183,10 +198,95 @@ public class globalController {
     @FXML
     private VBox centerVBox;
     public int idActiveGroup = 0;
+
+    @FXML
+    private StackPane centerStackPane;
+
+
+
     private void handleGroupButtonClick(String buttonId) {
+        idActiveGroup = Integer.parseInt(buttonId);
         loadCentralComponent(buttonId);
-        loadPostsFromDatabase(Integer.parseInt(buttonId));
+        getPostsFromDatabase(idActiveGroup);
+        postContent.clear();
+        path.setText("");
+        createPost.setVisible(false);
+        //rende visibile il componente creaPost solo se non ce ne sono altri
+        newPostButton.setVisible(true);
     }
+    @FXML
+    private void toggleCreatePost() {
+        createPost.setVisible(false);
+    }
+    @FXML
+    private void showCreatePost() {
+        System.out.println("showCreatePost");
+        System.out.println(this.currentUser);
+        System.out.println(idActiveGroup);
+        postContent.clear();
+        path.setText("");
+        createPost.setVisible(true);
+    }
+
+    @FXML VBox mainviewVbox;
+    private  void getPostsFromDatabase(int id) {
+
+        String query = "SELECT * FROM Posts WHERE group_id = ? ORDER BY timestamp";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String author = resultSet.getString("author_username");
+                    String text = resultSet.getString("content");
+                    String postPicture = resultSet.getString("postPicture");
+                    String userProfilePicture = resultSet.getString("user_profile_picture");
+                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
+
+                    createAndLoadPostComponent(author, text, postPicture, userProfilePicture, timestamp.toString());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private Rectangle authorPic;
+    @FXML
+    private Label authorName;
+    @FXML
+    private TextArea postText;
+    @FXML
+    private Label postDate;
+    @FXML
+    private Rectangle postPic;
+   @FXML
+   private VBox postBox;
+
+    @FXML
+    private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/post.fxml"));
+            fxmlLoader.setController(this);
+
+            // Caricamento del componente
+            Node postComponent = fxmlLoader.load();
+            mainviewVbox.getChildren().add(0, postComponent);
+
+
+            showProfileOrGroupList(userProfilePicture, author, authorName, authorPic, 40, 40);
+
+            if (postPicture == null || postPicture.equals("")) {
+                postBox.getChildren().remove(postPic);
+            } else {
+                showProfileOrGroupList(postPicture, null, null, postPic, 457, 457);
+            }
+            postText.setText(text);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void loadCentralComponent(String buttonId) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/centralGrouPane.fxml"));
@@ -195,9 +295,10 @@ public class globalController {
             // Caricamento del componente
             Node groupComponent = fxmlLoader.load();
 
-            // Rimozione del primo figlio se è un Button
+            // Rimozione del primo figlio se è un Button (se lo è significa che c'è un gruppo attivo)
             if (centerVBox.getChildren().get(0) instanceof Button) {
                 centerVBox.getChildren().remove(0);
+                mainviewVbox.getChildren().clear();
             }
             //utilizzato perché non ho altro modo di far combaciare i bordi nel componente caricato dinamicamente.
             if (groupComponent instanceof Button) {
@@ -209,6 +310,7 @@ public class globalController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     @FXML
     private Rectangle ActiveGroupPic;
@@ -222,11 +324,68 @@ public class globalController {
                 while (resultSet.next()) {
                     String fotoGruppo = resultSet.getString("fotoGruppo");
                     String nome = resultSet.getString("nome");
-                    showProfileOrGroupList(fotoGruppo, nome, ActiveGroupName, ActiveGroupPic);
+
+                    showProfileOrGroupList(fotoGruppo, nome, ActiveGroupName, ActiveGroupPic, 70 ,70);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
+    private FileUploadUtility fileUploadUtility = new FileUploadUtility();
+
+    @FXML
+    private void handleChoosePhoto() {
+        fileUploadUtility.chooseProfilePicture();
+        String selectedFilePath = fileUploadUtility.getSelectedProfilePicturePath();
+        path.setText(selectedFilePath);
+    }
+
+
+    @FXML
+    private void handleuploadPost() {
+        System.out.println("uploading post");
+        System.out.println(currentUser);
+        System.out.println(idActiveGroup);
+        uploadPost(idActiveGroup, currentUser);
+        createPost.setVisible(false);
+
+    }
+
+
+    private void uploadPost(int groupId, User currentUser) {
+        String postText = postContent.getText();
+        if (postText.isEmpty()){
+            createPost.setVisible(false);
+            return;
+        }
+        String postPictureLink = "";
+        if (!path.getText().isEmpty()){
+            postPictureLink = fileUploadUtility.uploadProfilePicture();
+        }
+
+        // Genera un nuovo timestamp ogni volta che il metodo viene chiamato
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        String sql = "INSERT INTO Posts (content, postpicture, author_username, user_profile_picture, timestamp, group_id) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, postText);
+            stmt.setString(2, postPictureLink);
+            stmt.setString(3, currentUser.getNomeUtente());
+            stmt.setString(4, currentUser.getProfilePictureLink());
+            stmt.setTimestamp(5, timestamp);
+            stmt.setInt(6, groupId);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //refresh dei post
+        mainviewVbox.getChildren().clear();
+        getPostsFromDatabase(groupId);
+    }
+
 }

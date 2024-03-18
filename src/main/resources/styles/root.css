@@ -153,3 +153,52 @@
 .choice-box .context-menu .menu-item {
     -fx-background-color: rgba(255,255,255,0.2);
 }
+
+.button-like {
+    -fx-icon-color: #E0E0E0;
+}
+
+.button-like:pressed {
+    /* Styles for when the button is pressed */
+    -fx-scale-x: 0.90;
+    -fx-scale-y: 0.90;
+    -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);;
+}
+.icon:pressed {
+    -fx-icon-color: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);;
+}
+.active {
+    -fx-icon-color: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);
+}
+
+.actionButton{
+    -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);
+}
+.actionButton:pressed{
+    -fx-scale-x: 0.90;
+    -fx-scale-y: 0.90;
+}
+.scroll-pane {
+    -fx-background-color: transparent;
+
+}
+
+.stondato .viewport {
+
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.text-area{
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+.text-area .content {
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+}
+.comment .content {
+    -fx-background-radius: 12px;
+    -fx-background-color: #26282b;
+    -fx-padding: 10px;
+}

@@ -2,6 +2,7 @@ package it.uninaSocialGroup.Controllers;
 
 import it.uninaSocialGroup.Oggetti.User;
 import it.uninaSocialGroup.Utils.DBUtil;
+import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +24,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import it.uninaSocialGroup.Utils.FileUploadUtility;
-
+import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -44,13 +46,33 @@ public class globalController {
         this.currentUser = user;
         System.out.println(currentUser);
         connectToDatabase();
-        initializeSlidePanel();
         createPost.setVisible(false);
         createGroup.setVisible(false);
         reportPanel.setVisible(false);
         showProfileOrGroupList(currentUser.getProfilePictureLink(), currentUser.getNomeUtente(), usernameAlto, proPic, 70, 70);
         getGroupsFromDatabaseAndDisplay();
         monthChoice.getItems().addAll("Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre");
+    }
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    public void initialize() {
+        initializeSlidePanel();
+
+        PauseTransition pause = new PauseTransition(Duration.millis(500));
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Ogni volta che il testo cambia riavvia il PauseTransition
+            pause.setOnFinished(event -> {
+                if (newValue.isEmpty()) {
+                    getGroupsFromDatabaseAndDisplay();
+                } else {
+                    updateAvailableGroups(newValue.toLowerCase());
+                }
+            });
+            pause.playFromStart();
+        });
     }
 
     @FXML
@@ -75,7 +97,8 @@ public class globalController {
     @FXML
     private TextArea postContent;
 
-    private boolean isVBoxOpen = true; // supponiamo che il VBox sia aperto all'inizio
+    private boolean isAGroupActive = false;
+    private boolean isVBoxOpen = true;
     private Connection connection;
     private String link = "https://drive.google.com/uc?export=view&id=1DvpLvwgBZaKlSDmQdgCV1fCfIqhnRWU7";
     public void showProfileOrGroupList(String profilePictureLink, String username, Label nameLabel, Rectangle imagePlaceholder, double width, double height) {
@@ -126,15 +149,16 @@ public class globalController {
     @FXML
     public void toggleVBox() {
         if (isVBoxOpen) {
-            rightVBox.setPrefWidth(35); // chiude il VBox
+            rightVBox.setPrefWidth(35);
         } else {
-            rightVBox.setPrefWidth(240); // apre il VBox, supponendo che la larghezza originale sia 200
+            rightVBox.setPrefWidth(240);
         }
-        isVBoxOpen = !isVBoxOpen; // aggiorna lo stato del VBox
+        isVBoxOpen = !isVBoxOpen;
     }
 
 
     private void getGroupsFromDatabaseAndDisplay() {
+        leftVBox.getChildren().clear();
         String query = "SELECT groupDetails.id_gruppo, groupDetails.fotoGruppo, groupDetails.nome " +
                 "FROM gruppi AS groupDetails " +
                 "INNER JOIN group_members AS participantDetails ON groupDetails.id_gruppo = participantDetails.id_gruppo " +
@@ -142,15 +166,40 @@ public class globalController {
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, currentUser.getNomeUtente());
-            System.out.println("Debug: getGroupsFromDatabaseAndDisplay -> currentUser: " + currentUser);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id_gruppo");
                     String fotoGruppo = resultSet.getString("fotoGruppo");
                     String nome = resultSet.getString("nome");
+                    Rectangle rectangle = new Rectangle();
+                    rectangle.setId("rectangle" + nome);
+                    Label label = new Label();
+                    label.setId("label" + nome);
 
-                    // Creazione dei componenti
+                    Node groupComponent = createGroupComponent(rectangle, String.valueOf(id), label, nome);
+                    leftVBox.getChildren().add(groupComponent);
+                    showProfileOrGroupList(fotoGruppo, nome, label, rectangle, 70, 70);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void updateAvailableGroups(String searchCriteria) {
+        String query = "SELECT id_gruppo, fotoGruppo, nome FROM gruppi WHERE LOWER(nome) LIKE ? OR LOWER(categoria) LIKE ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, "%" + searchCriteria.toLowerCase() + "%");
+            statement.setString(2, "%" + searchCriteria.toLowerCase() + "%");
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                leftVBox.getChildren().clear();
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id_gruppo");
+                    String fotoGruppo = resultSet.getString("fotoGruppo");
+                    String nome = resultSet.getString("nome");
                     Rectangle rectangle = new Rectangle();
                     rectangle.setId("rectangle" + nome);
                     Label label = new Label();
@@ -167,19 +216,16 @@ public class globalController {
     }
 
     private Node createGroupComponent(Rectangle rectangle, String buttonId, Label label, String labelText) {
-        // Impostazione del rettangolo
         rectangle.setArcHeight(40.0);
         rectangle.setArcWidth(70.0);
         rectangle.setHeight(40.0);
         rectangle.setWidth(40.0);
         rectangle.setStyle("-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;");
 
-        // Impostazione del label
         label.setText(labelText);
         label.setStyle("-fx-background-color: transparent;");
         HBox.setMargin(label, new Insets(0, 0, 0, 10));
 
-        // Creazione del button
         Button button = new Button();
         button.setId(buttonId);
         button.setPrefHeight(50.0);
@@ -205,9 +251,6 @@ public class globalController {
         return button;
     }
 
-    //il pulsante deve: caricare il titolo del gruppo nella ui, dove sta il vbox
-    //caricare i post del gruppo nella ui, dove sta la scrollpane
-    //settare su visibile il componente creapost
     @FXML
     private VBox centerVBox;
     public int idActiveGroup = 0;
@@ -215,20 +258,63 @@ public class globalController {
     @FXML
     private StackPane centerStackPane;
 
-
+    //GRUPPI NELLA SIDEBAR E RICERCA
 
     private void handleGroupButtonClick(String buttonId) {
+        isAGroupActive = true;
         reportPanel.setVisible(false);
         createGroup.setVisible(false);
         homePanel.setVisible(false);
         idActiveGroup = Integer.parseInt(buttonId);
         loadCentralComponent(buttonId);
-        getPostsFromDatabase(idActiveGroup);
-        postContent.clear();
-        path.setText("");
-        createPost.setVisible(false);
-        newPostButton.setVisible(true);
+        if (isCurrentUserMemberOfGroup(Integer.valueOf(buttonId))) {
+            postContent.clear();
+            getPostsFromDatabase(idActiveGroup, currentUser.getNomeUtente());
+            path.setText("");
+            createPost.setVisible(false);
+            newPostButton.setVisible(true);
+        }else{
+            Label label = new Label("Non sei membro di questo gruppo. per partecipare");
+            VBox.setMargin(label, new Insets(120, 0, 0, 0));
+            mainviewVbox.getChildren().add(label);
+
+            Button button = new Button("Unisciti!");
+            VBox.setMargin(button, new Insets(20, 0, 0, 0));
+            button.getStyleClass().add("actionButton");
+            mainviewVbox.getChildren().add(button);
+            button.setOnAction(event -> joinGroup(buttonId));
+        }
     }
+    @FXML
+    private void joinGroup(String buttonId){
+        String query = "INSERT INTO group_members (id_gruppo, nomeUtente) VALUES (?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, Integer.parseInt(buttonId));
+            statement.setString(2, currentUser.getNomeUtente());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        handleGroupButtonClick(buttonId);
+    }
+
+
+
+    private boolean isCurrentUserMemberOfGroup(int groupId) {
+        String query = "SELECT * FROM group_members WHERE id_gruppo = ? AND nomeUtente = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, groupId);
+            statement.setString(2, currentUser.getNomeUtente());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     @FXML
     private void toggleCreatePost() {
         createPost.setVisible(false);
@@ -244,11 +330,13 @@ public class globalController {
     }
 
     @FXML VBox mainviewVbox;
-    private  void getPostsFromDatabase(int id) {
-
-        String query = "SELECT * FROM Posts WHERE group_id = ? ORDER BY timestamp";
+    private  void getPostsFromDatabase(int id, String currentUser) {
+        String query = "SELECT Posts.*, UserLikes.Liked FROM Posts " +
+                "LEFT JOIN UserLikes ON Posts.id = UserLikes.PostId AND UserLikes.nomeutente = ? " +
+                "WHERE Posts.group_id = ? ORDER BY Posts.timestamp";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
+            statement.setString(1, currentUser);
+            statement.setInt(2, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int idPost = resultSet.getInt("id");
@@ -258,8 +346,9 @@ public class globalController {
                     String userProfilePicture = resultSet.getString("user_profile_picture");
                     Timestamp timestamp = resultSet.getTimestamp("timestamp");
                     int likeNumber = resultSet.getInt("numero_like");
+                    boolean liked = resultSet.getBoolean("Liked");
 
-                    createAndLoadPostComponent(author, text, postPicture, userProfilePicture, timestamp.toString(), idPost, likeNumber);
+                    createAndLoadPostComponent(author, text, postPicture, userProfilePicture, timestamp.toString(), idPost, likeNumber, liked);
                 }
             }
         } catch (SQLException e) {
@@ -278,14 +367,36 @@ public class globalController {
     private Rectangle postPic;
    @FXML
    private VBox postBox;
+    @FXML
+    private Label likes;
+
+    //inserisco il nome del contenitore padre, così da impostare facilmente in bottone con l'id del post per non ricevere puntatori a null
+    @FXML
+    private HBox likesAndComments;
+
+
+    private Button createLikeButton(int idPost, boolean liked) {
+        FontIcon heartIcon = new FontIcon("fas-heart");
+        heartIcon.getStyleClass().add("icon");
+        heartIcon.setIconSize(23);
+        heartIcon.setIconColor(Color.rgb( 224, 224, 224));
+        Button likeButton = new Button();
+        likeButton.setGraphic(heartIcon);
+        if (liked){
+            heartIcon.getStyleClass().add("active");
+        }
+        likeButton.getStyleClass().add("button-like");
+        likeButton.setId(String.valueOf(idPost));
+        likeButton.setOnAction(event -> incrementLikeNumber(event));
+        return likeButton;
+    }
 
     @FXML
-    private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp, int idPost, int likeNumber) {
+    private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp, int idPost, int likeNumber, boolean liked) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/post.fxml"));
             fxmlLoader.setController(this);
 
-            // Caricamento del componente
             Node postComponent = fxmlLoader.load();
             mainviewVbox.getChildren().add(0, postComponent);
 
@@ -296,32 +407,72 @@ public class globalController {
             } else {
                 showProfileOrGroupList(postPicture, null, null, postPic, 457, 457);
             }
-            this.LikeNumber.setText(String.valueOf(likeNumber));
-            postComponent.setId(String.valueOf(idPost));
+            Button likeButton = createLikeButton(idPost, liked);
+            likesAndComments.getChildren().add(0, likeButton);
+            likes.setText(String.valueOf(likeNumber));
+            likes.setId( "likes" + idPost);
             postText.setText(text);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
-    private Label LikeNumber;
-    @FXML
-    private void incrementLikeNumber(ActionEvent e) {
-        Node postComponent = (Node) e.getSource();
-        String postId = postComponent.getId();
-        handleLikeButton(postId);
-        this.LikeNumber.setText(String.valueOf(Integer.parseInt(LikeNumber.getText()) + 1));
+    //trova la label corrispondente, prende la classe del pulsante like e se è attiva decrementa, altrimenti incrementa
+    private void incrementLikeNumber(javafx.event.ActionEvent e) {
+        Button likeButton = (Button) e.getSource();
+        int postId = Integer.parseInt(likeButton.getId());
+
+        Label likesLabel = (Label) centerVBox.lookup("#likes" + postId);
+        FontIcon icon = (FontIcon) likeButton.getGraphic();
+
+        if (icon.getStyleClass().contains("active")) {
+            // Se l'icona ha la classe active, decrementa
+            int currentLikes = Integer.parseInt(likesLabel.getText());
+            likesLabel.setText(String.valueOf(currentLikes - 1));
+
+            // Rimuovi la classe "active" dall'icona
+            icon.getStyleClass().remove("active");
+
+            handleLikeButton(postId, -1);
+        } else {
+            // Se l'icona non ha la classe active, incrementa il numero di like
+            int currentLikes = Integer.parseInt(likesLabel.getText());
+            likesLabel.setText(String.valueOf(currentLikes + 1));
+            icon.getStyleClass().add("active");
+            handleLikeButton(postId, 1);
+        }
     }
-    private void handleLikeButton(String postId) {
-        String query = "UPDATE Posts SET numero_like = numero_like + 1 WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, Integer.parseInt(postId));
-            statement.executeUpdate();
+    private void handleLikeButton(int postId, int increment) {
+        String queryPosts = "UPDATE Posts SET numero_like = numero_like + ? WHERE id = ?";
+        String queryUserLikesInsert = "INSERT INTO UserLikes (Liked, PostId, nomeutente) VALUES (?, ?, ?)";
+        String queryUserLikesDelete = "DELETE FROM UserLikes WHERE PostId = ? AND nomeutente = ?";
+
+        try (PreparedStatement statementPosts = connection.prepareStatement(queryPosts);
+             PreparedStatement statementUserLikesInsert = connection.prepareStatement(queryUserLikesInsert);
+             PreparedStatement statementUserLikesDelete = connection.prepareStatement(queryUserLikesDelete)) {
+
+            statementPosts.setInt(1, increment);
+            statementPosts.setInt(2, postId);
+            statementPosts.executeUpdate();
+
+            if (increment > 0) {
+                // Se l'utente ha messo "Mi piace" al post, inserisce un nuovo record
+                statementUserLikesInsert.setBoolean(1, true);
+                statementUserLikesInsert.setInt(2, postId);
+                statementUserLikesInsert.setString(3, currentUser.getNomeUtente());
+                statementUserLikesInsert.executeUpdate();
+            } else {
+                // Se l'utente ha rimosso il "Mi piace" dal post, elimina il record, cosi da non avere un database di like più grande di quel che deve essere
+                statementUserLikesDelete.setInt(1, postId);
+                statementUserLikesDelete.setString(2, currentUser.getNomeUtente());
+                statementUserLikesDelete.executeUpdate();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
     private Node groupComponent;
 
@@ -330,7 +481,6 @@ public class globalController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/centralGrouPane.fxml"));
             fxmlLoader.setController(this);
 
-            // Caricamento del componente
             groupComponent = fxmlLoader.load();
 
             // Rimozione del primo figlio se è un Button (se lo è significa che c'è un gruppo attivo)
@@ -426,7 +576,7 @@ public class globalController {
         }
         //refresh dei post
         mainviewVbox.getChildren().clear();
-        getPostsFromDatabase(groupId);
+        getPostsFromDatabase(groupId, currentUser.getNomeUtente());
     }
 
 
@@ -458,6 +608,7 @@ public class globalController {
         createGroup.setVisible(true);
         if (centerVBox.getChildren().get(0) instanceof Button) {
             centerVBox.getChildren().remove(0);
+            mainviewVbox.getChildren().clear();
         }
     }
 
@@ -542,6 +693,7 @@ public class globalController {
         homePanel.setVisible(true);
         if (centerVBox.getChildren().get(0) instanceof Button) {
             centerVBox.getChildren().remove(0);
+            mainviewVbox.getChildren().clear();
         }
     }
 
@@ -568,6 +720,7 @@ public class globalController {
         reportPanel.setVisible(true);
         if (centerVBox.getChildren().get(0) instanceof Button) {
             centerVBox.getChildren().remove(0);
+            mainviewVbox.getChildren().clear();
         }
     }
 

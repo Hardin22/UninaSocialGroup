@@ -43,13 +43,12 @@
             <Insets />
          </opaqueInsets>
       </TextArea>
-      <HBox alignment="CENTER_LEFT" layoutX="137.0" layoutY="24.0" maxWidth="457.0" minHeight="60.0" minWidth="457.0" prefHeight="60.0" prefWidth="457.0" spacing="20.0" style="-fx-background-radius: 0 0 24 24; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 0 0 26 26;" VBox.vgrow="NEVER">
+      <HBox fx:id="likesAndComments" alignment="CENTER_LEFT" layoutX="137.0" layoutY="24.0" maxWidth="457.0" minHeight="60.0" minWidth="457.0" prefHeight="60.0" prefWidth="457.0" spacing="20.0" style="-fx-background-radius: 0 0 24 24; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 0 0 26 26;" VBox.vgrow="NEVER">
          <padding>
             <Insets left="4.0" />
          </padding>
          <children>
-            <Button mnemonicParsing="false" onAction="#incrementLikeNumber" text="&lt;3" />
-            <Label fx:id="likeNumber" prefHeight="20.0" prefWidth="32.0" text="0">
+            <Label fx:id="likes" prefHeight="20.0" prefWidth="32.0" text="0">
                <font>
                   <Font size="18.0" />
                </font>

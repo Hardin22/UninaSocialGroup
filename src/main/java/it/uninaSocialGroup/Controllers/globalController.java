@@ -63,7 +63,7 @@ public class globalController {
         PauseTransition pause = new PauseTransition(Duration.millis(500));
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Ogni volta che il testo cambia riavvia il PauseTransition
+            // Ogni volta che il testo cambia riavvia il PauseTransition. questo previene un enorme carico alla cpu (500% nei test)
             pause.setOnFinished(event -> {
                 if (newValue.isEmpty()) {
                     getGroupsFromDatabaseAndDisplay();
@@ -234,8 +234,6 @@ public class globalController {
 
         button.setStyle("-fx-background-radius: 24px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-border-radius: 26px;");
 
-
-        // Creazione dell'HBox e aggiunta dei componenti
         HBox hbox = new HBox();
         hbox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         hbox.setPrefHeight(42.0);
@@ -390,7 +388,82 @@ public class globalController {
         likeButton.setOnAction(event -> incrementLikeNumber(event));
         return likeButton;
     }
+    @FXML
+    private VBox commentSection;
+    @FXML
+    private VBox commentsView;
+    private Button createCommentButton(int idPost) {
+        FontIcon commentIcon = new FontIcon("fas-comment");
+        commentIcon.getStyleClass().add("icon");
+        commentIcon.setIconSize(23);
+        commentIcon.setIconColor(Color.rgb(224, 224, 224));
+        Button commentButton = new Button();
+        commentButton.setGraphic(commentIcon);
+        commentButton.getStyleClass().add("button-comment");
+        commentButton.setId("comm" + idPost);
+        commentButton.setOnAction(event -> handleCommentButton(event));
+        return commentButton;
+    }
 
+    @FXML
+    private void handleCommentButton(javafx.event.ActionEvent e) {
+        commentsView.getChildren().clear();
+        commentSection.setVisible(true);
+        String buttonId = ((Button) e.getSource()).getId();
+        //faccio in questo modo perchè altrimenti il programma va in errore, siccome esiste già questo id.
+        int postId = Integer.parseInt(buttonId.replace("comm", ""));
+        getCommentsFromDatabase(postId);
+    }
+
+    private void getCommentsFromDatabase(int postId) {
+        String query = "SELECT * FROM Comments WHERE post_id = ? ORDER BY timestamp";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, postId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    int post_id = resultSet.getInt("post_id");
+                    String authorUserName = resultSet.getString("username");
+                    String content = resultSet.getString("content");
+                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
+                    String user_profile_picture = resultSet.getString("user_profile_picture");
+
+                    createAndLoadCommentComponent(post_id, authorUserName, content, user_profile_picture);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private Rectangle commentsPic;
+    @FXML
+    private Label commentUsername;
+    @FXML
+    private Label commentContent;
+    private void createAndLoadCommentComponent(int post_id, String authorUserName, String content, String user_profile_picture) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/comment.fxml"));
+            fxmlLoader.setController(this);
+            Node commentComponent = fxmlLoader.load();
+            commentsPic.setArcWidth(commentsPic.getWidth());
+            commentsPic.setArcHeight(commentsPic.getHeight());
+            commentsPic.setStyle("-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;");
+            commentContent.setText(content);
+            showProfileOrGroupList(user_profile_picture, authorUserName, commentUsername, commentsPic, 40, 40);
+            commentsView.getChildren().add(commentComponent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void closeCommentSection() {
+        commentSection.setVisible(false);
+    }
     @FXML
     private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp, int idPost, int likeNumber, boolean liked) {
         try {
@@ -408,7 +481,9 @@ public class globalController {
                 showProfileOrGroupList(postPicture, null, null, postPic, 457, 457);
             }
             Button likeButton = createLikeButton(idPost, liked);
+            Button commentButton = createCommentButton(idPost);
             likesAndComments.getChildren().add(0, likeButton);
+            likesAndComments.getChildren().add(2, commentButton);
             likes.setText(String.valueOf(likeNumber));
             likes.setId( "likes" + idPost);
             postText.setText(text);

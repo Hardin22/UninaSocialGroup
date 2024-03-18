@@ -97,18 +97,18 @@
                         </ScrollPane>
                      </children>
                      <children>
-                        <VBox alignment="CENTER">
+                        <VBox fx:id="commentSection" alignment="CENTER" visible="false">
                            <children>
                               <VBox maxHeight="500.0" maxWidth="500.0" prefHeight="500.0" prefWidth="100.0" style="-fx-background-color: #1b1d1f; -fx-background-radius: 20;">
                                  <children>
                                     <AnchorPane prefHeight="0.0" prefWidth="351.0">
                                        <children>
-                                          <Button layoutX="22.0" layoutY="16.0" mnemonicParsing="false" style="-fx-text-fill: orangered;" text="X" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                          <Button onAction="#closeCommentSection" layoutX="22.0" layoutY="16.0" mnemonicParsing="false" style="-fx-text-fill: orangered;" text="X" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                                        </children>
                                     </AnchorPane>
                                     <ScrollPane hbarPolicy="NEVER" prefHeight="249.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-background-radius: 20px; -fx-border-radius: 20px;" styleClass="stondato" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                        <content>
-                                          <VBox alignment="TOP_CENTER" maxWidth="499.0" prefHeight="57.0" prefWidth="499.0" spacing="30.0">
+                                          <VBox fx:id="commentsView" alignment="TOP_CENTER" maxWidth="499.0" prefHeight="57.0" prefWidth="499.0" spacing="30.0">
                                              <children>
                                                 <Label alignment="CENTER" prefHeight="26.0" prefWidth="99.0" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="commenti" textAlignment="CENTER">
                                                    <VBox.margin>
@@ -201,7 +201,7 @@
                               <Button mnemonicParsing="false" onAction="#createGroup" prefHeight="43.0" prefWidth="123.0" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="Crea" />
                            </children>
                         </VBox>
-                        <VBox fx:id="homePanel" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #26282b;" visible="false">
+                        <VBox fx:id="homePanel" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #26282b;" visible="true">
                            <children>
                               <Label style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="UninaSocialGroup">
                                  <font>

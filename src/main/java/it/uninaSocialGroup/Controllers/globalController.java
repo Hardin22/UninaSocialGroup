@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class globalController {
     private User currentUser;
@@ -101,20 +103,29 @@ public class globalController {
     private boolean isVBoxOpen = true;
     private Connection connection;
     private String link = "https://drive.google.com/uc?export=view&id=1DvpLvwgBZaKlSDmQdgCV1fCfIqhnRWU7";
+    private Map<String, Image> imageCache = new HashMap<>();
+
     public void showProfileOrGroupList(String profilePictureLink, String username, Label nameLabel, Rectangle imagePlaceholder, double width, double height) {
         if (nameLabel != null){
             nameLabel.setText(username);
         }
 
         final String finalProfilePictureLink = profilePictureLink;
+
         Task<Image> loadImageTask = new Task<Image>() {
             @Override
             protected Image call() throws Exception {
-                String link = finalProfilePictureLink;
-                if (link == null || link.equals("")) {
-                    link = getClass().getResource("/Immagini/user.png").toExternalForm();
+                if (imageCache.containsKey(finalProfilePictureLink)) {
+                    return imageCache.get(finalProfilePictureLink);
+                } else {
+                    String link = finalProfilePictureLink;
+                    if (link == null || link.equals("")) {
+                        link = getClass().getResource("/Immagini/user.png").toExternalForm();
+                    }
+                    Image image = new Image(link, false);
+                    imageCache.put(finalProfilePictureLink, image);
+                    return image;
                 }
-                return new Image(link, width, height, true, true);
             }
         };
 
@@ -347,6 +358,7 @@ public class globalController {
                     boolean liked = resultSet.getBoolean("Liked");
 
                     createAndLoadPostComponent(author, text, postPicture, userProfilePicture, timestamp.toString(), idPost, likeNumber, liked);
+
                 }
             }
         } catch (SQLException e) {
@@ -459,6 +471,8 @@ public class globalController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Separator separator = new Separator();
+        commentsView.getChildren().add(separator);
     }
 
     @FXML
@@ -517,6 +531,8 @@ public class globalController {
             likes.setText(String.valueOf(likeNumber));
             likes.setId( "likes" + idPost);
             postText.setText(text);
+            Separator separator = new Separator();
+            mainviewVbox.getChildren().add(separator);
 
         } catch (IOException e) {
             e.printStackTrace();

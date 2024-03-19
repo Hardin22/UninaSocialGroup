@@ -30,7 +30,7 @@ public class FileUploadUtility {
             mimeType = tika.detect(selectedProfilePicture);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Errore durante la determinazione del tipo MIME del file";
+            return "";
         }
 
         String result;
@@ -38,7 +38,7 @@ public class FileUploadUtility {
             result = googleDriveService.uploadFile(selectedProfilePicture, mimeType);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Errore durante l'upload del file";
+            return "";
         }
 
         return result;

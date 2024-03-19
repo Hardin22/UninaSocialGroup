@@ -180,7 +180,7 @@
 }
 .scroll-pane {
     -fx-background-color: transparent;
-
+    -fx-border-color: transparent;
 }
 
 .stondato .viewport {
@@ -201,4 +201,21 @@
     -fx-background-radius: 12px;
     -fx-background-color: #26282b;
     -fx-padding: 10px;
+}
+.separator{
+    -fx-max-width: 400px;
+}
+.separator .line {
+    -fx-border-color: #26282b;
+    -fx-border-width: 0.5px;
+    -fx-max-width: 400px;
+}
+.text-area .scroll-bar:vertical {
+    -fx-pref-width: 1;
+    -fx-opacity: 0;
+}
+.postText .content{
+    -fx-background-radius: 0px;
+    -fx-border-radius: 0px;
+    -fx-background-color: black;
 }

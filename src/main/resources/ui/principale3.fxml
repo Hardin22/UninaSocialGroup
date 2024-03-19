@@ -17,12 +17,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-
-<!--<?import org.kordamp.ikonli.javafx.FontIcon?>-->
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="703.0" prefWidth="1180.0" style="-fx-background-color: #1b1d1f;;" stylesheets="@../styles/root.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.uninaSocialGroup.Controllers.globalController">
    <left>
-      <VBox minWidth="92.0" prefHeight="788.0" prefWidth="230.0" BorderPane.alignment="CENTER">
+      <VBox minWidth="92.0" prefHeight="788.0" prefWidth="230.0" style="-fx-border-color: black; -fx-border-width: 0.5;" BorderPane.alignment="CENTER">
          <children>
             <HBox id="corner-style" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" minHeight="109.0" prefHeight="113.0" prefWidth="234.0" spacing="10.0" style="-fx-background-color: #26282b; -fx-border-radius: 0 15 0 0;">
                <children>
@@ -33,7 +32,7 @@
                   <Insets left="10.0" />
                </padding>
             </HBox>
-            <HBox minWidth="29.0" prefHeight="29.0" prefWidth="243.0" spacing="30.0" style="-fx-background-color: #1b1d1f;">
+            <HBox minWidth="29.0" prefHeight="29.0" prefWidth="243.0" spacing="30.0" style="-fx-background-color: #1b1d1f; -fx-border-color: black; -fx-border-width: 0.5;">
                <children>
                   <StackPane alignment="CENTER_RIGHT" prefHeight="150.0" prefWidth="200.0">
                      <children>
@@ -43,11 +42,11 @@
                               <Insets left="10.0" />
                            </StackPane.margin>
                         </TextField>
-                        <!--<FontIcon iconLiteral="fas-search" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconSize="22">
+                        <FontIcon iconLiteral="fas-search" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconSize="22">
                            <StackPane.margin>
                               <Insets right="10.0" />
                            </StackPane.margin>
-                        </FontIcon>-->
+                        </FontIcon>
 
                      </children>
                   </StackPane>
@@ -86,9 +85,9 @@
                <children>
                   <StackPane fx:id="centerStackPane" VBox.vgrow="ALWAYS">
                      <children>
-                        <ScrollPane fx:id="centerScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="677.0" prefWidth="601.0" style="-fx-background-color: black;" styleClass="viewport-style" vbarPolicy="NEVER">
+                        <ScrollPane fx:id="centerScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="677.0" prefWidth="601.0" style="-fx-background-color: transparent;" styleClass="viewport-style" vbarPolicy="NEVER">
                            <content>
-                              <VBox fx:id="mainviewVbox" alignment="CENTER" fillWidth="false" prefWidth="930.0" spacing="0.0">
+                              <VBox fx:id="mainviewVbox" alignment="CENTER" fillWidth="false" prefWidth="930.0" spacing="0.0" style="-fx-background-color: transparent;">
                                  <padding>
                                     <Insets left="10.0" right="10.0" top="5.0" />
                                  </padding>
@@ -103,20 +102,13 @@
                                  <children>
                                     <AnchorPane prefHeight="0.0" prefWidth="351.0">
                                        <children>
-                                          <Button onAction="#closeCommentSection" layoutX="22.0" layoutY="16.0" mnemonicParsing="false" style="-fx-text-fill: orangered;" text="X" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                          <Label alignment="CENTER" layoutX="182.0" layoutY="2.0" prefHeight="26.0" prefWidth="99.0" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="commenti" textAlignment="CENTER" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="20.0" />
+                                          <Button layoutX="22.0" layoutY="16.0" mnemonicParsing="false" onAction="#closeCommentSection" style="-fx-text-fill: orangered;" text="X" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                                        </children>
                                     </AnchorPane>
-                                    <ScrollPane hbarPolicy="NEVER" prefHeight="249.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-background-radius: 20px; -fx-border-radius: 20px;" styleClass="stondato" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                    <ScrollPane hbarPolicy="NEVER" prefHeight="249.0" prefWidth="500.0" style="-fx-background-color: transparent;" styleClass="stondato" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                        <content>
-                                          <VBox fx:id="commentsView" alignment="TOP_CENTER" maxWidth="499.0" prefHeight="57.0" prefWidth="499.0" spacing="30.0">
-                                             <children>
-                                                <Label alignment="CENTER" prefHeight="26.0" prefWidth="99.0" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="commenti" textAlignment="CENTER">
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                </Label>
-                                             </children>
-                                          </VBox>
+                                          <VBox fx:id="commentsView" alignment="TOP_CENTER" maxWidth="499.0" prefHeight="57.0" prefWidth="499.0" spacing="30.0" />
                                        </content>
                                     </ScrollPane>
                                     <TextArea fx:id="commentArea" prefHeight="51.0" prefWidth="500.0" promptText="scrivi un commento..." style="-fx-background-color: transparent;" styleClass="comment" wrapText="true">
@@ -126,24 +118,28 @@
                                     </TextArea>
                                  </children>
                               </VBox>
-                              <Button onAction="#postComment" mnemonicParsing="false" prefHeight="31.0" prefWidth="113.0" style="-fx-background-radius: 0 0 5 5;" styleClass="actionButton" text="pubblica">
+                              <Button mnemonicParsing="false" onAction="#postComment" prefHeight="31.0" prefWidth="113.0" style="-fx-background-radius: 0 0 5 5;" styleClass="actionButton" text="pubblica">
                                  <padding>
                                     <Insets bottom="5.0" />
                                  </padding>
                               </Button>
                            </children>
                         </VBox>
-                        <VBox fx:id="createPost" alignment="TOP_CENTER" maxHeight="500.0" maxWidth="600.0" prefHeight="680.0" prefWidth="716.0" visible="false" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+                        <VBox fx:id="createPost" alignment="CENTER" maxHeight="500.0" maxWidth="600.0" prefHeight="680.0" prefWidth="716.0" visible="false">
                            <children>
-                              <Button minWidth="170.0" mnemonicParsing="false" onAction="#toggleCreatePost" prefHeight="48.0" prefWidth="110.0" style="-fx-background-radius: 10 10 0 0; -fx-text-fill: orangered;" text="annulla">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font></Button>
-                              <VBox id="vbox-class" alignment="CENTER" prefHeight="464.0" prefWidth="600.0" spacing="10.0" styleClass="vbox-glass">
+                              <VBox id="vbox-class" alignment="TOP_CENTER" prefHeight="427.0" prefWidth="600.0" spacing="10.0" styleClass="vbox-glass">
                                  <children>
+                                    <Button alignment="TOP_LEFT" minWidth="170.0" mnemonicParsing="false" onAction="#toggleCreatePost" prefHeight="9.0" prefWidth="600.0" style="-fx-background-radius: 10 10 0 0; -fx-text-fill: orangered;" text="annulla">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="10.0" />
+                                       </VBox.margin>
+                                    </Button>
                                     <TextArea fx:id="postContent" maxWidth="-Infinity" minWidth="400.0" prefHeight="200.0" prefWidth="400.0" promptText="il tuo testo" style="-fx-border-color: transparent; -fx-background-color: transparent;" styleClass="TextAreaPost" wrapText="true">
                                        <VBox.margin>
-                                          <Insets top="40.0" />
+                                          <Insets top="10.0" />
                                        </VBox.margin>
                                     </TextArea>
                                     <Button mnemonicParsing="false" onAction="#handleChoosePhoto" style="-fx-background-color: #26282b;" text="scegli una foto" />
@@ -201,7 +197,7 @@
                               <Button mnemonicParsing="false" onAction="#createGroup" prefHeight="43.0" prefWidth="123.0" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="Crea" />
                            </children>
                         </VBox>
-                        <VBox fx:id="homePanel" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #26282b;" visible="true">
+                        <VBox fx:id="homePanel" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #26282b;">
                            <children>
                               <Label style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="UninaSocialGroup">
                                  <font>
@@ -286,55 +282,62 @@
       </VBox>
    </center>
    <right>
-      <VBox fx:id="rightVBox" alignment="CENTER" prefHeight="703.0" prefWidth="157.0" style="-fx-background-radius: 10 0 0 10; -fx-border-color: 0; -fx-border-radius: 15 0 0 15;" BorderPane.alignment="CENTER">
+      <VBox fx:id="rightVBox" alignment="CENTER" prefHeight="703.0" prefWidth="157.0" style="-fx-border-color: black; -fx-border-width: 0.5;" BorderPane.alignment="CENTER">
          <children>
             <VBox minHeight="30.0" prefHeight="437.0" prefWidth="157.0">
-               <children>
-                  <Button fx:id="togglebutton" mnemonicParsing="false" onAction="#toggleVBox" prefHeight="31.0" prefWidth="187.0" text="Impostazioni">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
+               <Button fx:id="togglebutton" mnemonicParsing="false" onAction="#toggleVBox" prefHeight="31.0" prefWidth="187.0" style="-fx-background-color: transparent;">
+                  <graphic>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <FontIcon iconLiteral="fas-toggle-on" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                           <Label text="Impostazioni" />
+                        </children>
+                     </HBox>
+                  </graphic>
+               </Button>
             </VBox>
-            <VBox alignment="CENTER_LEFT" minWidth="30.0" prefWidth="200.0" spacing="10.0">
+            <VBox alignment="CENTER_LEFT" minWidth="20.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#showHomePanel" prefHeight="31.0" prefWidth="153.0" style="-fx-background-color: transparent;" text="home">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="321.0">
-                     <children>
-                        <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="190.0" style="-fx-background-color: transparent;" text="profilo">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="341.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#showReportPanel" prefHeight="31.0" prefWidth="147.0" style="-fx-background-color: transparent;" text="statistiche">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="361.0">
-                     <children>
-                        <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="204.0" style="-fx-background-color: transparent;" text="preferenze">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#showHomePanel" prefHeight="31.0" prefWidth="153.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <FontIcon iconLiteral="fas-home" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <Label text="home" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
+                  <Button alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="190.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <FontIcon iconLiteral="fas-user" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <Label text="profilo" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showReportPanel" prefHeight="31.0" prefWidth="147.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <FontIcon iconLiteral="fas-chart-bar" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <Label text="statistiche" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="204.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <FontIcon iconLiteral="fas-cog" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <Label text="preferenze" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
                </children>
                <opaqueInsets>
                   <Insets />
@@ -345,10 +348,15 @@
             </VBox>
             <VBox alignment="BOTTOM_LEFT" minHeight="30.0" prefHeight="437.0" prefWidth="157.0">
                <children>
-                  <Button fx:id="newPostButton" mnemonicParsing="false" onAction="#showCreatePost" prefHeight="31.0" prefWidth="162.0" text="nuovo post">
-                     <VBox.margin>
-                        <Insets bottom="50.0" />
-                     </VBox.margin>
+                  <Button fx:id="newPostButton" mnemonicParsing="false" onAction="#showCreatePost" prefHeight="31.0" prefWidth="162.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <FontIcon iconLiteral="fas-plus-square" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <Label text="nuovo post" />
+                           </children>
+                        </HBox>
+                     </graphic>
                   </Button>
                </children>
             </VBox>

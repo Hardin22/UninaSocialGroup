@@ -119,14 +119,14 @@
                                           </VBox>
                                        </content>
                                     </ScrollPane>
-                                    <TextArea prefHeight="51.0" prefWidth="500.0" promptText="scrivi un commento..." style="-fx-background-color: transparent;" styleClass="comment" wrapText="true">
+                                    <TextArea fx:id="commentArea" prefHeight="51.0" prefWidth="500.0" promptText="scrivi un commento..." style="-fx-background-color: transparent;" styleClass="comment" wrapText="true">
                                        <padding>
                                           <Insets bottom="8.0" left="8.0" right="8.0" />
                                        </padding>
                                     </TextArea>
                                  </children>
                               </VBox>
-                              <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="113.0" style="-fx-background-radius: 0 0 5 5;" styleClass="actionButton" text="pubblica">
+                              <Button onAction="#postComment" mnemonicParsing="false" prefHeight="31.0" prefWidth="113.0" style="-fx-background-radius: 0 0 5 5;" styleClass="actionButton" text="pubblica">
                                  <padding>
                                     <Insets bottom="5.0" />
                                  </padding>

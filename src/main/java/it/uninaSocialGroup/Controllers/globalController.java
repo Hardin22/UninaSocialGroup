@@ -404,11 +404,12 @@ public class globalController {
         commentButton.setOnAction(event -> handleCommentButton(event));
         return commentButton;
     }
-
+    private int idActivePost;
     @FXML
     private void handleCommentButton(javafx.event.ActionEvent e) {
         commentsView.getChildren().clear();
         commentSection.setVisible(true);
+        idActivePost = Integer.parseInt(((Button) e.getSource()).getId().replace("comm", ""));
         String buttonId = ((Button) e.getSource()).getId();
         //faccio in questo modo perchè altrimenti il programma va in errore, siccome esiste già questo id.
         int postId = Integer.parseInt(buttonId.replace("comm", ""));
@@ -416,14 +417,13 @@ public class globalController {
     }
 
     private void getCommentsFromDatabase(int postId) {
-        String query = "SELECT * FROM Comments WHERE post_id = ? ORDER BY timestamp";
+        String query = "SELECT * FROM Comments WHERE post_id = ? ORDER BY timestamp DESC ";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, postId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
                     int post_id = resultSet.getInt("post_id");
                     String authorUserName = resultSet.getString("username");
                     String content = resultSet.getString("content");
@@ -444,6 +444,7 @@ public class globalController {
     private Label commentUsername;
     @FXML
     private Label commentContent;
+
     private void createAndLoadCommentComponent(int post_id, String authorUserName, String content, String user_profile_picture) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/comment.fxml"));
@@ -463,6 +464,35 @@ public class globalController {
     @FXML
     private void closeCommentSection() {
         commentSection.setVisible(false);
+        newPostButton.setVisible(true);
+        commentArea.clear();
+    }
+    @FXML
+    private TextArea commentArea;
+
+    @FXML
+    private void postComment() {
+        String commentText = commentArea.getText();
+        if (commentText.isEmpty()){
+            return;
+        }
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        String sql = "INSERT INTO Comments (content, post_id, username, user_profile_picture, timestamp) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, commentText);
+            stmt.setInt(2, idActivePost);
+            stmt.setString(3, currentUser.getNomeUtente());
+            stmt.setString(4, currentUser.getProfilePictureLink());
+            stmt.setTimestamp(5, timestamp);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        commentsView.getChildren().clear();
+        getCommentsFromDatabase(idActivePost);
+        commentArea.clear();
     }
     @FXML
     private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp, int idPost, int likeNumber, boolean liked) {

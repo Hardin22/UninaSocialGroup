@@ -1,6 +1,14 @@
 package it.uninaSocialGroup.Controllers;
 
+import it.uninaSocialGroup.DAO.GroupDAO;
+import it.uninaSocialGroup.DAO.GroupMemberDAO;
+import it.uninaSocialGroup.DAO.PostDAO;
+import it.uninaSocialGroup.DAO.CommentDAO;
+import it.uninaSocialGroup.DAO.LikeDAO;
+import it.uninaSocialGroup.Oggetti.Group;
 import it.uninaSocialGroup.Oggetti.User;
+import it.uninaSocialGroup.Oggetti.Post;
+import it.uninaSocialGroup.Oggetti.Comment;
 import it.uninaSocialGroup.Utils.DBUtil;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
@@ -26,7 +34,8 @@ import javafx.scene.layout.StackPane;
 import it.uninaSocialGroup.Utils.FileUploadUtility;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
-import java.awt.*;
+import java.util.List;
+import  java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
@@ -44,16 +53,27 @@ public class globalController {
     @FXML
     private ChoiceBox<String> monthChoice;
 
+    private GroupDAO groupDAO;
+    private GroupMemberDAO groupMemberDAO;
+
+    private PostDAO postDAO;
+    private CommentDAO commentDAO;
+    private LikeDAO likeDAO;
     public void setCurrentUser(User user) {
         this.currentUser = user;
         System.out.println(currentUser);
         connectToDatabase();
+        groupDAO = new GroupDAO(connection);
+        groupMemberDAO = new GroupMemberDAO(connection);
+        postDAO = new PostDAO(connection);
+        commentDAO = new CommentDAO(connection);
+        likeDAO = new LikeDAO(connection);
+        showProfileOrGroupList(currentUser.getProfilePictureLink(), currentUser.getNomeUtente(), usernameAlto, proPic);
+        getGroupsFromDatabaseAndDisplay();
+        monthChoice.getItems().addAll("Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre");
         createPost.setVisible(false);
         createGroup.setVisible(false);
         reportPanel.setVisible(false);
-        showProfileOrGroupList(currentUser.getProfilePictureLink(), currentUser.getNomeUtente(), usernameAlto, proPic, 70, 70);
-        getGroupsFromDatabaseAndDisplay();
-        monthChoice.getItems().addAll("Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre");
     }
     @FXML
     private TextField searchField;
@@ -61,6 +81,7 @@ public class globalController {
     @FXML
     public void initialize() {
         initializeSlidePanel();
+
 
         PauseTransition pause = new PauseTransition(Duration.millis(500));
 
@@ -105,7 +126,7 @@ public class globalController {
     private String link = "https://drive.google.com/uc?export=view&id=1DvpLvwgBZaKlSDmQdgCV1fCfIqhnRWU7";
     private Map<String, Image> imageCache = new HashMap<>();
 
-    public void showProfileOrGroupList(String profilePictureLink, String username, Label nameLabel, Rectangle imagePlaceholder, double width, double height) {
+    public void showProfileOrGroupList(String profilePictureLink, String username, Label nameLabel, Rectangle imagePlaceholder) {
         if (nameLabel != null){
             nameLabel.setText(username);
         }
@@ -170,59 +191,32 @@ public class globalController {
 
     private void getGroupsFromDatabaseAndDisplay() {
         leftVBox.getChildren().clear();
-        String query = "SELECT groupDetails.id_gruppo, groupDetails.fotoGruppo, groupDetails.nome " +
-                "FROM gruppi AS groupDetails " +
-                "INNER JOIN group_members AS participantDetails ON groupDetails.id_gruppo = participantDetails.id_gruppo " +
-                "WHERE participantDetails.nomeUtente = ?";
+        Map<Integer, Group> groups = groupDAO.getGroupsByUser(currentUser.getNomeUtente());
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, currentUser.getNomeUtente());
+        for (Group group : groups.values()) {
+            Rectangle rectangle = new Rectangle();
+            rectangle.setId("rectangle" + group.getGroupName());
+            Label label = new Label();
+            label.setId("label" + group.getGroupName());
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id_gruppo");
-                    String fotoGruppo = resultSet.getString("fotoGruppo");
-                    String nome = resultSet.getString("nome");
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.setId("rectangle" + nome);
-                    Label label = new Label();
-                    label.setId("label" + nome);
-
-                    Node groupComponent = createGroupComponent(rectangle, String.valueOf(id), label, nome);
-                    leftVBox.getChildren().add(groupComponent);
-                    showProfileOrGroupList(fotoGruppo, nome, label, rectangle, 70, 70);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Node groupComponent = createGroupComponent(rectangle, String.valueOf(group.getId()), label, group.getGroupName());
+            leftVBox.getChildren().add(groupComponent);
+            showProfileOrGroupList(group.getGroupPictureLink(), group.getGroupName(), label, rectangle);
         }
     }
     private void updateAvailableGroups(String searchCriteria) {
-        String query = "SELECT id_gruppo, fotoGruppo, nome FROM gruppi WHERE LOWER(nome) LIKE ? OR LOWER(categoria) LIKE ?";
+        leftVBox.getChildren().clear();
+        Map<Integer, Group> groups = groupDAO.searchGroups(searchCriteria);
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, "%" + searchCriteria.toLowerCase() + "%");
-            statement.setString(2, "%" + searchCriteria.toLowerCase() + "%");
+        for (Group group : groups.values()) {
+            Rectangle rectangle = new Rectangle();
+            rectangle.setId("rectangle" + group.getGroupName());
+            Label label = new Label();
+            label.setId("label" + group.getGroupName());
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-                leftVBox.getChildren().clear();
-
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id_gruppo");
-                    String fotoGruppo = resultSet.getString("fotoGruppo");
-                    String nome = resultSet.getString("nome");
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.setId("rectangle" + nome);
-                    Label label = new Label();
-                    label.setId("label" + nome);
-
-                    Node groupComponent = createGroupComponent(rectangle, String.valueOf(id), label, nome);
-                    leftVBox.getChildren().add(groupComponent);
-                    showProfileOrGroupList(fotoGruppo, nome, label, rectangle, 70, 70);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Node groupComponent = createGroupComponent(rectangle, String.valueOf(group.getId()), label, group.getGroupName());
+            leftVBox.getChildren().add(groupComponent);
+            showProfileOrGroupList(group.getGroupPictureLink(), group.getGroupName(), label, rectangle);
         }
     }
 
@@ -296,31 +290,15 @@ public class globalController {
     }
     @FXML
     private void joinGroup(String buttonId){
-        String query = "INSERT INTO group_members (id_gruppo, nomeUtente) VALUES (?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, Integer.parseInt(buttonId));
-            statement.setString(2, currentUser.getNomeUtente());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        int groupId = Integer.parseInt(buttonId);
+        groupMemberDAO.joinGroup(groupId, currentUser.getNomeUtente());
         handleGroupButtonClick(buttonId);
     }
 
 
 
     private boolean isCurrentUserMemberOfGroup(int groupId) {
-        String query = "SELECT * FROM group_members WHERE id_gruppo = ? AND nomeUtente = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, groupId);
-            statement.setString(2, currentUser.getNomeUtente());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return groupMemberDAO.isUserMemberOfGroup(groupId, currentUser.getNomeUtente());
     }
 
 
@@ -339,38 +317,21 @@ public class globalController {
     }
 
     @FXML VBox mainviewVbox;
-    private  void getPostsFromDatabase(int id, String currentUser) {
-        String query = "SELECT Posts.*, UserLikes.Liked FROM Posts " +
-                "LEFT JOIN UserLikes ON Posts.id = UserLikes.PostId AND UserLikes.nomeutente = ? " +
-                "WHERE Posts.group_id = ? ORDER BY Posts.timestamp";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, currentUser);
-            statement.setInt(2, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    int idPost = resultSet.getInt("id");
-                    String author = resultSet.getString("author_username");
-                    String text = resultSet.getString("content");
-                    String postPicture = resultSet.getString("postPicture");
-                    String userProfilePicture = resultSet.getString("user_profile_picture");
-                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
-                    int likeNumber = resultSet.getInt("numero_like");
-                    boolean liked = resultSet.getBoolean("Liked");
 
-                    createAndLoadPostComponent(author, text, postPicture, userProfilePicture, timestamp.toString(), idPost, likeNumber, liked);
 
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void getPostsFromDatabase(int groupId, String currentUser) {
+        List<Post> posts = postDAO.getPostsByGroupId(groupId, currentUser);
+        for (Post post : posts) {
+            createAndLoadPostComponent(post);
         }
     }
+
     @FXML
     private Rectangle authorPic;
     @FXML
     private Label authorName;
     @FXML
-    private TextArea postText;
+    private Label postText;
     @FXML
     private Label postDate;
     @FXML
@@ -391,6 +352,7 @@ public class globalController {
         heartIcon.setIconSize(23);
         heartIcon.setIconColor(Color.rgb( 224, 224, 224));
         Button likeButton = new Button();
+        likeButton.setStyle("-fx-background-color: #131313;");
         likeButton.setGraphic(heartIcon);
         if (liked){
             heartIcon.getStyleClass().add("active");
@@ -410,6 +372,7 @@ public class globalController {
         commentIcon.setIconSize(23);
         commentIcon.setIconColor(Color.rgb(224, 224, 224));
         Button commentButton = new Button();
+        commentButton.setStyle("-fx-background-color: #131313;");
         commentButton.setGraphic(commentIcon);
         commentButton.getStyleClass().add("button-comment");
         commentButton.setId("comm" + idPost);
@@ -429,24 +392,9 @@ public class globalController {
     }
 
     private void getCommentsFromDatabase(int postId) {
-        String query = "SELECT * FROM Comments WHERE post_id = ? ORDER BY timestamp DESC ";
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, postId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    int post_id = resultSet.getInt("post_id");
-                    String authorUserName = resultSet.getString("username");
-                    String content = resultSet.getString("content");
-                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
-                    String user_profile_picture = resultSet.getString("user_profile_picture");
-
-                    createAndLoadCommentComponent(post_id, authorUserName, content, user_profile_picture);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List<Comment> comments = commentDAO.getCommentsByPostId(postId);
+        for (Comment comment : comments) {
+            createAndLoadCommentComponent(comment);
         }
     }
 
@@ -457,7 +405,7 @@ public class globalController {
     @FXML
     private Label commentContent;
 
-    private void createAndLoadCommentComponent(int post_id, String authorUserName, String content, String user_profile_picture) {
+    private void createAndLoadCommentComponent(Comment comment) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/comment.fxml"));
             fxmlLoader.setController(this);
@@ -465,8 +413,8 @@ public class globalController {
             commentsPic.setArcWidth(commentsPic.getWidth());
             commentsPic.setArcHeight(commentsPic.getHeight());
             commentsPic.setStyle("-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;");
-            commentContent.setText(content);
-            showProfileOrGroupList(user_profile_picture, authorUserName, commentUsername, commentsPic, 40, 40);
+            commentContent.setText(comment.getContent());
+            showProfileOrGroupList(comment.getUserProfilePicture(), comment.getUsername(), commentUsername, commentsPic);
             commentsView.getChildren().add(commentComponent);
         } catch (IOException e) {
             e.printStackTrace();
@@ -491,25 +439,21 @@ public class globalController {
             return;
         }
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-        String sql = "INSERT INTO Comments (content, post_id, username, user_profile_picture, timestamp) VALUES (?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, commentText);
-            stmt.setInt(2, idActivePost);
-            stmt.setString(3, currentUser.getNomeUtente());
-            stmt.setString(4, currentUser.getProfilePictureLink());
-            stmt.setTimestamp(5, timestamp);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Comment newComment = new Comment(
+                idActivePost,
+                currentUser.getNomeUtente(),
+                commentText,
+                timestamp,
+                currentUser.getProfilePictureLink()
+        );
+        commentDAO.addComment(newComment);
         commentsView.getChildren().clear();
         getCommentsFromDatabase(idActivePost);
         commentArea.clear();
     }
+
     @FXML
-    private void createAndLoadPostComponent(String author, String text, String postPicture, String userProfilePicture, String timestamp, int idPost, int likeNumber, boolean liked) {
+    private void createAndLoadPostComponent(Post post) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/post.fxml"));
             fxmlLoader.setController(this);
@@ -517,20 +461,20 @@ public class globalController {
             Node postComponent = fxmlLoader.load();
             mainviewVbox.getChildren().add(0, postComponent);
 
-            showProfileOrGroupList(userProfilePicture, author, authorName, authorPic, 40, 40);
+            showProfileOrGroupList(post.getUserProfilePicture(), post.getAuthorUsername(), authorName, authorPic);
 
-            if (postPicture == null || postPicture.equals("")) {
+            if (post.getPostPicture() == null || post.getPostPicture().equals("")) {
                 postBox.getChildren().remove(postPic);
             } else {
-                showProfileOrGroupList(postPicture, null, null, postPic, 457, 457);
+                showProfileOrGroupList(post.getPostPicture(), null, null, postPic);
             }
-            Button likeButton = createLikeButton(idPost, liked);
-            Button commentButton = createCommentButton(idPost);
+            Button likeButton = createLikeButton(post.getId(), post.isLiked());
+            Button commentButton = createCommentButton(post.getId());
             likesAndComments.getChildren().add(0, likeButton);
             likesAndComments.getChildren().add(2, commentButton);
-            likes.setText(String.valueOf(likeNumber));
-            likes.setId( "likes" + idPost);
-            postText.setText(text);
+            likes.setText(String.valueOf(post.getLikeNumber()));
+            likes.setId("likes" + post.getId());
+            postText.setText(post.getContent());
             Separator separator = new Separator();
             mainviewVbox.getChildren().add(separator);
 
@@ -540,62 +484,28 @@ public class globalController {
     }
 
     @FXML
-    //trova la label corrispondente, prende la classe del pulsante like e se è attiva decrementa, altrimenti incrementa
+    //trova la label corrispondente, prende la classe del pulsante like e se è attiva decrementa, altrimenti incrementa. dopodiché aggiorna il db con il dao
     private void incrementLikeNumber(javafx.event.ActionEvent e) {
         Button likeButton = (Button) e.getSource();
         int postId = Integer.parseInt(likeButton.getId());
 
         Label likesLabel = (Label) centerVBox.lookup("#likes" + postId);
         FontIcon icon = (FontIcon) likeButton.getGraphic();
+        boolean isLiked = !icon.getStyleClass().contains("active");
+        int currentLikes = Integer.parseInt(likesLabel.getText());
+        likesLabel.setText(String.valueOf(currentLikes + (isLiked ? 1 : -1)));
 
-        if (icon.getStyleClass().contains("active")) {
-            // Se l'icona ha la classe active, decrementa
-            int currentLikes = Integer.parseInt(likesLabel.getText());
-            likesLabel.setText(String.valueOf(currentLikes - 1));
-
-            // Rimuovi la classe "active" dall'icona
-            icon.getStyleClass().remove("active");
-
-            handleLikeButton(postId, -1);
-        } else {
-            // Se l'icona non ha la classe active, incrementa il numero di like
-            int currentLikes = Integer.parseInt(likesLabel.getText());
-            likesLabel.setText(String.valueOf(currentLikes + 1));
+        if (isLiked) {
             icon.getStyleClass().add("active");
-            handleLikeButton(postId, 1);
+        } else {
+            icon.getStyleClass().remove("active");
         }
+        likeDAO.updateLike(postId, currentUser.getNomeUtente(), isLiked);
     }
-    private void handleLikeButton(int postId, int increment) {
-        String queryPosts = "UPDATE Posts SET numero_like = numero_like + ? WHERE id = ?";
-        String queryUserLikesInsert = "INSERT INTO UserLikes (Liked, PostId, nomeutente) VALUES (?, ?, ?)";
-        String queryUserLikesDelete = "DELETE FROM UserLikes WHERE PostId = ? AND nomeutente = ?";
 
-        try (PreparedStatement statementPosts = connection.prepareStatement(queryPosts);
-             PreparedStatement statementUserLikesInsert = connection.prepareStatement(queryUserLikesInsert);
-             PreparedStatement statementUserLikesDelete = connection.prepareStatement(queryUserLikesDelete)) {
-
-            statementPosts.setInt(1, increment);
-            statementPosts.setInt(2, postId);
-            statementPosts.executeUpdate();
-
-            if (increment > 0) {
-                // Se l'utente ha messo "Mi piace" al post, inserisce un nuovo record
-                statementUserLikesInsert.setBoolean(1, true);
-                statementUserLikesInsert.setInt(2, postId);
-                statementUserLikesInsert.setString(3, currentUser.getNomeUtente());
-                statementUserLikesInsert.executeUpdate();
-            } else {
-                // Se l'utente ha rimosso il "Mi piace" dal post, elimina il record, cosi da non avere un database di like più grande di quel che deve essere
-                statementUserLikesDelete.setInt(1, postId);
-                statementUserLikesDelete.setString(2, currentUser.getNomeUtente());
-                statementUserLikesDelete.executeUpdate();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     private Node groupComponent;
+    @FXML
+    private Label membersNumber;
 
     private void loadCentralComponent(String buttonId) {
         try {
@@ -616,6 +526,10 @@ public class globalController {
             // Aggiunta del componente al VBox come primo figlio
             centerVBox.getChildren().add(0, groupComponent);
             getGroupPicAndName(Integer.parseInt(buttonId));
+            groupComponent.setId(buttonId);
+            membersNumber.setText("partecipanti: " + String.valueOf(groupMemberDAO.getGroupMembers(Integer.parseInt(buttonId)).size()));
+            groupComponent.setOnMouseClicked(event -> showGroupInfo());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -625,21 +539,57 @@ public class globalController {
     private Rectangle ActiveGroupPic;
     @FXML
     private Label ActiveGroupName;
-    private void getGroupPicAndName(int id) {
-        String query = "SELECT fotoGruppo, nome FROM gruppi WHERE id_gruppo = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    String fotoGruppo = resultSet.getString("fotoGruppo");
-                    String nome = resultSet.getString("nome");
 
-                    showProfileOrGroupList(fotoGruppo, nome, ActiveGroupName, ActiveGroupPic, 70 ,70);
-                }
+    private Group activeGroup;
+    private void getGroupPicAndName(int id) {
+        activeGroup = groupDAO.getGroupDetailsById(id);
+        if (activeGroup != null) {
+            showProfileOrGroupList(activeGroup.getGroupPictureLink(), activeGroup.getGroupName(), ActiveGroupName, ActiveGroupPic);
+        }
+    }
+
+    @FXML
+    private Label groupNameLabel;
+    @FXML
+    private Rectangle infoPic;
+    @FXML
+    private Label groupCategoryLabel;
+    @FXML
+    private Label groupDescriptionLabel;
+    @FXML
+    private Button esc;
+    @FXML
+    private VBox groupInfo;
+    @FXML
+    private void showGroupInfo() {
+        mainviewVbox.getChildren().clear();
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/groupInfo.fxml"));
+            fxmlLoader.setController(this);
+            Node groupInfoComponent = fxmlLoader.load();
+            mainviewVbox.getChildren().clear();
+            mainviewVbox.getChildren().add(groupInfoComponent);
+            showProfileOrGroupList(activeGroup.getGroupPictureLink(), activeGroup.getGroupName(), groupNameLabel, infoPic);
+            groupDescriptionLabel.setText(activeGroup.getDescription());
+            groupCategoryLabel.setText("#"+activeGroup.getCategory());
+            esc.setOnAction(event -> deleteGroupInfo());
+            List<String> members = groupMemberDAO.getGroupMembers(activeGroup.getId());
+            for (String member : members) {
+                Label label = new Label(member);
+                label.setPrefWidth(406);
+                groupInfo.getChildren().add(label);
+                Separator separator = new Separator();
+                separator.setPrefWidth(300);
+                groupInfo.getChildren().add(separator);
             }
-        } catch (SQLException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @FXML
+    private void deleteGroupInfo() {
+        mainviewVbox.getChildren().clear();
+        getPostsFromDatabase(idActiveGroup, currentUser.getNomeUtente());
     }
 
 
@@ -667,7 +617,7 @@ public class globalController {
         path.setText("");
     }
 
-
+    @FXML
     private void uploadPost(int groupId, User currentUser) {
         String postText = postContent.getText();
         if (postText.isEmpty()){
@@ -678,27 +628,13 @@ public class globalController {
         if (!path.getText().isEmpty()){
             postPictureLink = fileUploadUtility.uploadProfilePicture();
         }
-
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-        String sql = "INSERT INTO Posts (content, postpicture, author_username, user_profile_picture, timestamp, group_id) VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, postText);
-            stmt.setString(2, postPictureLink);
-            stmt.setString(3, currentUser.getNomeUtente());
-            stmt.setString(4, currentUser.getProfilePictureLink());
-            stmt.setTimestamp(5, timestamp);
-            stmt.setInt(6, groupId);
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        //refresh dei post
+        Post newPost = new Post(0, currentUser.getNomeUtente(), postText, postPictureLink, currentUser.getProfilePictureLink(), timestamp, groupId, 0, false);
+        postDAO.addPost(newPost);
         mainviewVbox.getChildren().clear();
         getPostsFromDatabase(groupId, currentUser.getNomeUtente());
     }
+
 
 
     //LOGICA DI CREAZIONE GRUPPO
@@ -748,15 +684,23 @@ public class globalController {
     }
     @FXML
     private void createGroup() {
-        String groupName = this.groupName.getText();
-        String groupCategory = this.groupCategory.getText();
-        String groupDescription = this.groupDescription.getText();
+        String groupNameText = groupName.getText();
+        String groupCategoryText = groupCategory.getText();
+        String groupDescriptionText = groupDescription.getText();
+        try {
+            if (groupDAO.checkIfNameIsAlreadyUsed(groupNameText)) {
+                errorMessage.setText("Nome del gruppo già utilizzato");
+                return;
+            }
+        } catch (Exception e) {
+            errorMessage.setText("Errore durante il controllo del nome. Riprova.");
 
-        if (groupName.isEmpty() || groupCategory.isEmpty() || groupDescription.isEmpty()){
+        }
+        if (groupNameText.isEmpty() || groupCategoryText.isEmpty() || groupDescriptionText.isEmpty()) {
             errorMessage.setText("I campi nome, categoria e descrizione non possono essere vuoti");
             return;
         }
-
+        int groupId = 0;
         String groupPhotoLink = "";
         if (!groupPicPath.getText().isEmpty()){
             groupPhotoLink = groupPhotoUploader.uploadProfilePicture();
@@ -764,41 +708,29 @@ public class globalController {
             // Imposta l'immagine di default se non è stata selezionata alcuna immagine
             groupPhotoLink = getClass().getResource("/Immagini/groupDefaultImage.png").toExternalForm();
         }
+        Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-        String sql = "INSERT INTO gruppi (nome, nomeCreatore, descrizione, categoria, dataCreazione, fotoGruppo) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, groupName);
-            stmt.setString(2, currentUser.getNomeUtente());
-            stmt.setString(3, groupDescription);
-            stmt.setString(4, groupCategory);
-            stmt.setDate(5, new java.sql.Date(System.currentTimeMillis()));
-            stmt.setString(6, groupPhotoLink);
-            stmt.executeUpdate();
+        Group newGroup = new Group(groupNameText, groupDescriptionText, groupCategoryText, groupId, currentUser.getNomeUtente(), creationDate, groupPhotoLink);
 
-            // Recupera l'ID del gruppo appena creato
-            ResultSet generatedKeys = stmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int groupId = generatedKeys.getInt(1);
-
-                String sqlGroupMembers = "INSERT INTO group_members (id_gruppo, nomeUtente) VALUES (?, ?)";
-                try (PreparedStatement stmtGroupMembers = connection.prepareStatement(sqlGroupMembers)) {
-                    stmtGroupMembers.setInt(1, groupId);
-                    stmtGroupMembers.setString(2, currentUser.getNomeUtente());
-                    stmtGroupMembers.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
+        try {
+            groupDAO.createGroup(newGroup);
+            clearGroupForm();
+            leftVBox.getChildren().clear();
+            getGroupsFromDatabaseAndDisplay();
+            homePanel.setVisible(true);
+        } catch (Exception e) {
+            errorMessage.setText("Errore durante la creazione del gruppo. Per favore, riprova.");
             e.printStackTrace();
+
         }
-        this.groupName.clear();
-        this.groupCategory.clear();
-        this.groupDescription.clear();
+    }
+
+    private void clearGroupForm() {
+        groupName.clear();
+        groupCategory.clear();
+        groupDescription.clear();
         groupPicPath.setText("");
         createGroup.setVisible(false);
-        leftVBox.getChildren().clear();
-        getGroupsFromDatabaseAndDisplay();
-
-        homePanel.setVisible(true);
     }
 
 

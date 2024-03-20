@@ -20,8 +20,8 @@
                   <Label fx:id="ActiveGroupName" text="" />
                   <HBox prefHeight="21.0" prefWidth="521.0" spacing="30.0">
                      <children>
-                        <Label style="-fx-text-fill: rgba(255,255,255, 0.4);" text="partecipanti:" />
-                        <Label style="-fx-text-fill: rgba(255,255,255, 0.4);" text="online:" />
+                        <Label fx:id="membersNumber" style="-fx-text-fill: rgba(255,255,255, 0.4);" text="partecipanti:" />
+
                      </children>
                   </HBox>
                </children>

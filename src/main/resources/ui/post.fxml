@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
@@ -10,7 +9,7 @@
 
 <VBox fx:id="postBox" alignment="CENTER" fillWidth="false" maxHeight="700.0" prefWidth="637.0" stylesheets="@../styles/root.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox alignment="CENTER_LEFT" maxHeight="60.0" maxWidth="457.0" minHeight="60.0" minWidth="457.0" prefWidth="457.0" style="-fx-background-radius: 24 24 0 0;-fx-background-color: black;">
+      <HBox alignment="CENTER_LEFT" maxHeight="60.0" maxWidth="457.0" minHeight="60.0" minWidth="457.0" prefWidth="457.0" style="-fx-background-radius: 24 24 0 0;-fx-background-color: #131313;">
          <children>
             <Rectangle fx:id="authorPic" arcHeight="60.0" arcWidth="60.0" height="40.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="40.0">
                <HBox.margin>
@@ -30,19 +29,13 @@
             <Insets left="4.0" />
          </padding>
       </HBox>
-      <Rectangle fx:id="postPic" arcHeight="5.0" arcWidth="5.0" height="457.0" stroke="BLACK" strokeType="INSIDE" width="457.0" VBox.vgrow="NEVER" />
-      <TextArea fx:id="postText" editable="false" maxHeight="-Infinity" prefHeight="92.0" prefWidth="460.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 0px; -fx-border-radius: 0px" styleClass="postText" text="GSDGSDIUHVS" wrapText="true" VBox.vgrow="ALWAYS">
-         <font>
-            <Font size="18.0" />
-         </font>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </TextArea>
-      <HBox fx:id="likesAndComments" alignment="CENTER_LEFT" layoutX="137.0" layoutY="24.0" maxWidth="457.0" minHeight="60.0" minWidth="457.0" prefHeight="60.0" prefWidth="457.0" spacing="20.0" style="-fx-background-radius: 0 0 24 24; -fx-background-color: black" VBox.vgrow="NEVER">
+      <Rectangle fx:id="postPic" arcWidth="5.0" height="457.0" stroke="BLACK" strokeType="INSIDE" width="457.0" VBox.vgrow="NEVER" />
+      <Label fx:id="postText" minHeight="-Infinity" prefWidth="457.0" style="-fx-background-color: #131313;" wrapText="true">
+         <padding>
+            <Insets bottom="5.0" left="15.0" right="15.0" top="12.0" />
+         </padding>
+      </Label>
+      <HBox fx:id="likesAndComments" alignment="CENTER_LEFT" layoutX="137.0" layoutY="24.0" maxWidth="457.0" minHeight="60.0" minWidth="457.0" prefHeight="60.0" prefWidth="457.0" spacing="10.0" style="-fx-background-radius: 0 0 24 24; -fx-background-color: #131313" VBox.vgrow="NEVER">
          <padding>
             <Insets left="4.0" />
          </padding>

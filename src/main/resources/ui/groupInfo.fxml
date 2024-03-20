@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="475.0" prefWidth="506.0" spacing="20.0" style="-fx-border-color: rgb(65, 67, 68); -fx-border-radius: 20;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="10.0" prefWidth="200.0">
+         <children>
+            <Button fx:id="esc" layoutX="22.0" layoutY="18.0" mnemonicParsing="false" style="-fx-text-fill: orangered;" text="X" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="18.0" />
+         </children>
+      </AnchorPane>
+      <Rectangle fx:id="infoPic" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="100.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+      <Label fx:id="groupNameLabel" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="NOME GRUPPO">
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="groupCategoryLabel" text="#gioco d'azzardo" />
+      <Label fx:id="groupDescriptionLabel" maxWidth="400.0" minHeight="-Infinity" style="-fx-background-color: #1b1d1f; -fx-background-radius: 10;" text="in questo gruppo si fa un casino di pazzi zio non hai idea di quanto bordello dobbiamo fare minchia zi davvero" wrapText="true">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </Label>
+      <Label alignment="CENTER" prefHeight="30.0" prefWidth="130.0" style="-fx-background-color: #1b1d1f; -fx-background-radius: 5 5 0 0;" text="partecipanti: ">
+         <VBox.margin>
+            <Insets bottom="-10.0" />
+         </VBox.margin>
+         <padding>
+            <Insets left="5.0" right="5.0" top="5" bottom="5"/>
+         </padding>
+      </Label>
+      <VBox fx:id="groupInfo" maxWidth="400.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #1b1d1f; -fx-background-radius: 10;">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+         <padding>
+            <Insets left="10.0" top="10" bottom="10" />
+         </padding>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="40.0" />
+   </padding>
+</VBox>

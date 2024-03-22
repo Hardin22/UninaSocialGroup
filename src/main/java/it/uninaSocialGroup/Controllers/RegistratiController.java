@@ -2,6 +2,7 @@ package it.uninaSocialGroup.Controllers;
 
 import it.uninaSocialGroup.Oggetti.User;
 import it.uninaSocialGroup.Utils.DBUtil;
+import it.uninaSocialGroup.DAO.UserDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,7 +49,9 @@ public class RegistratiController {
     private userValidator validator = new userValidator();
     private File selectedProfilePicture;
 
+    private User currentUser;
 
+    private UserDAO userDAO;
     private FileUploadUtility fileUploadUtility = new FileUploadUtility();
 
     @FXML
@@ -58,6 +61,12 @@ public class RegistratiController {
             profilePictureLink = fileUploadUtility.uploadProfilePicture();
             User newUser = createNewUser(profilePictureLink);
             addUserToDatabase(newUser);
+            try {
+                userDAO = new UserDAO(DBUtil.getConnection());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            currentUser = userDAO.getUserByUsername(newUser.getNomeUtente());
             loadMainScene();
         }
     }
@@ -172,14 +181,18 @@ public class RegistratiController {
     }
     private void loadMainScene() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ui/principale2.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/principale3.fxml"));
+            Parent root = loader.load();
+
+            globalController globalController = (globalController) loader.getController();
+            globalController.setCurrentUser(currentUser);
+
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
 
             stage.setTitle("Unina Social Group");
             stage.show();
 
-            // Chiudi la schermata di login
             ((Stage) usernameField.getScene().getWindow()).close();
         } catch (IOException e) {
             e.printStackTrace();

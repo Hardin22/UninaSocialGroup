@@ -19,6 +19,7 @@ module org.example.uninasocialgroup {
     opens it.uninaSocialGroup.Application to javafx.graphics;
     exports it.uninaSocialGroup.Controllers to javafx.fxml;
     opens it.uninaSocialGroup.Controllers to javafx.fxml;
+    opens it.uninaSocialGroup.Oggetti to javafx.base;
     requires jdk.httpserver;
     requires org.apache.tika.core;
     requires java.desktop;

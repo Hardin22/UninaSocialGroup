@@ -23,6 +23,15 @@ public class User {
         this.matricola = matricola;
         this.profilePictureLink = profilePictureLink;
     }
+    public User(String nomeUtente, String nome, String cognome, String email, LocalDate dataDiNascita, String profilePictureLink, String matricola) {
+        this.nomeUtente = nomeUtente;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+        this.dataDiNascita = dataDiNascita;
+        this.profilePictureLink = profilePictureLink;
+        this.matricola = matricola;
+    }
 
     public String getNomeUtente() {
         return nomeUtente;

@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import it.uninaSocialGroup.Utils.DBUtil;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import it.uninaSocialGroup.DAO.UserDAO;
 import it.uninaSocialGroup.Controllers.globalController;
 public class LoginController {
 
@@ -32,18 +33,30 @@ public class LoginController {
 
     private User currentUser;
 
+    private UserDAO userDAO;
+    @FXML
+    private void initialize() {
+        Connection connection = null;
+        try {
+            connection = DBUtil.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        errorLabel.setVisible(false);
+        userDAO = new UserDAO(connection);
+    }
+
     @FXML
     protected void handleLogin(ActionEvent event) {
 
         String username = usernameField.getText();
         String password = passwordField.getText();
-
         String errorMessage = getErrorType(username, password);
 
         if (errorMessage != null) {
             showError(errorMessage);
         } else {
-            getCurrentUser(username);
+            currentUser = userDAO.getUserByUsername(username);
             loadMainScene();
         }
     }
@@ -131,57 +144,6 @@ public class LoginController {
         }
     }
 
-    public User getCurrentUser(String username) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = DBUtil.getConnection();
-
-            String sql = "SELECT * FROM users WHERE nomeUtente = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, username);
-
-            rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String nomeUtente = rs.getString("nomeUtente");
-
-                String nome = rs.getString("nome");
-
-                String cognome = rs.getString("cognome");
-
-                String email = rs.getString("email");
-
-                String password = rs.getString("password");
-
-                String matricola = rs.getString("matricola");
-
-                String fotoprofilo = rs.getString("fotoprofilo");
-
-                currentUser = new User(nomeUtente, nome, cognome, email, password, rs.getDate("dataDiNascita").toLocalDate(), matricola, fotoprofilo);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return currentUser;
-    }
 
     private void loadMainScene() {
         try {

@@ -1,48 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<!--<?import org.kordamp.ikonli.javafx.*?>-->
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="788.0" prefWidth="1073.0" style="-fx-background-color: #1b1d1f;;" stylesheets="@../styles/root.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.uninaSocialGroup.Controllers.globalController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="703.0" prefWidth="1180.0" style="-fx-background-color: #1b1d1f;;" stylesheets="@../styles/root.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.uninaSocialGroup.Controllers.globalController">
    <left>
-      <VBox minWidth="92.0" prefHeight="788.0" prefWidth="230.0" BorderPane.alignment="CENTER">
+      <VBox minWidth="92.0" prefHeight="788.0" prefWidth="230.0" style="-fx-border-color: black; -fx-border-width: 0.5;" BorderPane.alignment="CENTER">
          <children>
-            <HBox id="corner-style" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" minHeight="109.0" prefHeight="113.0" prefWidth="234.0" spacing="10.0" style="-fx-background-color: #26282b; -fx-background-radius: 0 15 0 0; -fx-border-color: black; -fx-border-radius: 0 15 0 0;">
+            <HBox id="corner-style" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" minHeight="109.0" prefHeight="113.0" prefWidth="234.0" spacing="10.0" style="-fx-background-color: #26282b; -fx-border-radius: 0 15 0 0;">
                <children>
                   <Rectangle fx:id="proPic" arcHeight="70.0" arcWidth="70.0" height="70.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="70.0" />
-                  <Label styleClass="coloredText" text="Hardin22" />
+                  <Label fx:id="usernameAlto" styleClass="coloredText" text="" />
                </children>
                <padding>
                   <Insets left="10.0" />
                </padding>
             </HBox>
-            <HBox minWidth="29.0" prefHeight="29.0" prefWidth="243.0" spacing="30.0" style="-fx-background-color: #1b1d1f;">
+            <HBox minWidth="29.0" prefHeight="29.0" prefWidth="243.0" spacing="30.0" style="-fx-background-color: #1b1d1f; -fx-border-color: black; -fx-border-width: 0.5;">
                <children>
                   <StackPane alignment="CENTER_RIGHT" prefHeight="150.0" prefWidth="200.0">
                      <children>
 
-                        <TextField maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="31.0" prefWidth="162.0" promptText="cerca gruppo">
+                        <TextField fx:id="searchField" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="31.0" prefWidth="162.0" promptText="cerca gruppo">
                            <StackPane.margin>
                               <Insets left="10.0" />
                            </StackPane.margin>
                         </TextField>
-                        <ImageView>
+                        <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-search" iconSize="22">
                            <StackPane.margin>
                               <Insets right="10.0" />
                            </StackPane.margin>
-                        </ImageView>
+                        </FontIcon>-->
+
                      </children>
                   </StackPane>
                </children>
@@ -50,43 +43,21 @@
                   <Insets bottom="5.0" top="5.0" />
                </padding>
             </HBox>
-            <ScrollPane fitToHeight="true" hbarPolicy="NEVER" hvalue="1.0" minWidth="60.0" prefHeight="558.0" prefWidth="234.0" style="-fx-background-color: black;" vbarPolicy="NEVER" vvalue="1.0" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToHeight="true" hbarPolicy="NEVER" hvalue="1.0" maxWidth="234.0" minWidth="60.0" prefHeight="558.0" style="-fx-background-color: transparent;" vbarPolicy="NEVER" vvalue="1.0" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox alignment="TOP_CENTER" spacing="10.0">
+                  <VBox fx:id="leftVBox" alignment="TOP_CENTER" maxWidth="234.0" prefHeight="568.0" prefWidth="228.0" spacing="8.0" style="-fx-background-color: transparent;">
                      <padding>
-                        <Insets left="10.0" right="10.0" top="5.0" />
+                        <Insets top="5.0" />
                      </padding>
-                     <children>
-                        <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="245.0">
-                           <graphic>
-                              <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="156.0" style="-fx-background-radius: 24px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-border-radius: 26px;">
-                                 <children>
-                                    <Rectangle fx:id="proPic21" arcHeight="40.0" arcWidth="70.0" height="40.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="41.0" />
-                                    <Label text="nomegruppo">
-                                       <HBox.margin>
-                                          <Insets left="10.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                 </children>
-                                 <padding>
-                                    <Insets left="4.0" />
-                                 </padding>
-                              </HBox>
-                           </graphic>
-                           <VBox.margin>
-                              <Insets right="-20.0" />
-                           </VBox.margin>
-                           <padding>
-                              <Insets right="-40.0" />
-                           </padding>
-                        </Button>
-                     </children>
+                     <VBox.margin>
+                        <Insets left="30.0" />
+                     </VBox.margin>
                   </VBox>
                </content>
             </ScrollPane>
-            <HBox alignment="CENTER" minHeight="54.0" prefHeight="64.0" prefWidth="234.0" style="-fx-background-color: #26282b; -fx-background-radius: 0 0 15 0;">
+            <HBox alignment="CENTER" minHeight="54.0" prefHeight="64.0" prefWidth="234.0" style="-fx-background-color: #26282b;">
                <children>
-                  <Button mnemonicParsing="false" text="crea un gruppo" />
+                  <Button mnemonicParsing="false" onAction="#showCreateGroupPanel" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="crea un gruppo" />
                </children>
             </HBox>
          </children>
@@ -96,198 +67,265 @@
       </VBox>
    </left>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
          <children>
-            <VBox alignment="BASELINE_LEFT" prefHeight="769.0" prefWidth="775.0" spacing="10.0" style="-fx-background-color: #1b1d1f;" VBox.vgrow="ALWAYS">
+            <VBox fx:id="centerVBox" alignment="TOP_CENTER" prefHeight="769.0" prefWidth="775.0" spacing="0.0" style="-fx-background-color: #1b1d1f;" VBox.vgrow="ALWAYS">
                <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="755.0" style="-fx-border-radius: 20px; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-background-radius: 20px;">
-                     <VBox.margin>
-                        <Insets left="10.0" right="10.0" top="7.0" />
-                     </VBox.margin>
+                  <StackPane fx:id="centerStackPane" VBox.vgrow="ALWAYS">
                      <children>
-                        <Rectangle fx:id="proPic1" arcHeight="70.0" arcWidth="70.0" height="70.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="70.0" />
-                        <VBox alignment="CENTER_LEFT" prefHeight="235.0" prefWidth="656.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                        <ScrollPane fx:id="centerScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="677.0" prefWidth="601.0" style="-fx-background-color: transparent;" styleClass="viewport-style" vbarPolicy="NEVER">
+                           <content>
+                              <VBox fx:id="mainviewVbox" alignment="CENTER" fillWidth="false" prefWidth="930.0" spacing="0.0" style="-fx-background-color: transparent;">
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                     <children>
+                        <VBox fx:id="commentSection" alignment="CENTER" visible="false">
                            <children>
-                              <Label text="nomegruppo" />
-                              <HBox prefHeight="21.0" prefWidth="521.0" spacing="30.0">
+                              <VBox maxHeight="500.0" maxWidth="500.0" prefHeight="500.0" prefWidth="100.0" style="-fx-background-color: #1b1d1f; -fx-background-radius: 20;">
                                  <children>
-                                    <Label style="-fx-text-fill: rgba(255,255,255, 0.4);" text="partecipanti:" />
-                                    <Label style="-fx-text-fill: rgba(255,255,255, 0.4);" text="online:" />
+                                    <AnchorPane prefHeight="0.0" prefWidth="351.0">
+                                       <children>
+                                          <Label alignment="CENTER" layoutX="182.0" layoutY="2.0" prefHeight="26.0" prefWidth="99.0" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="commenti" textAlignment="CENTER" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="20.0" />
+                                          <Button layoutX="22.0" layoutY="16.0" mnemonicParsing="false" onAction="#closeCommentSection" style="-fx-text-fill: orangered;" text="X" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <ScrollPane hbarPolicy="NEVER" prefHeight="249.0" prefWidth="500.0" style="-fx-background-color: transparent;" styleClass="stondato" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                       <content>
+                                          <VBox fx:id="commentsView" alignment="TOP_CENTER" maxWidth="499.0" prefHeight="57.0" prefWidth="499.0" spacing="30.0" />
+                                       </content>
+                                    </ScrollPane>
+                                    <TextArea fx:id="commentArea" prefHeight="51.0" prefWidth="500.0" promptText="scrivi un commento..." style="-fx-background-color: transparent;" styleClass="comment" wrapText="true">
+                                       <padding>
+                                          <Insets bottom="8.0" left="8.0" right="8.0" />
+                                       </padding>
+                                    </TextArea>
+                                 </children>
+                              </VBox>
+                              <Button mnemonicParsing="false" onAction="#postComment" prefHeight="31.0" prefWidth="113.0" style="-fx-background-radius: 0 0 5 5;" styleClass="actionButton" text="pubblica">
+                                 <padding>
+                                    <Insets bottom="5.0" />
+                                 </padding>
+                              </Button>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="createPost" alignment="CENTER" maxHeight="500.0" maxWidth="600.0" prefHeight="680.0" prefWidth="716.0" visible="false">
+                           <children>
+                              <VBox id="vbox-class" alignment="TOP_CENTER" prefHeight="427.0" prefWidth="600.0" spacing="10.0" styleClass="vbox-glass">
+                                 <children>
+                                    <Button alignment="TOP_LEFT" minWidth="170.0" mnemonicParsing="false" onAction="#toggleCreatePost" prefHeight="9.0" prefWidth="600.0" style="-fx-background-radius: 10 10 0 0; -fx-text-fill: orangered;" text="annulla">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="10.0" />
+                                       </VBox.margin>
+                                    </Button>
+                                    <TextArea fx:id="postContent" maxWidth="-Infinity" minWidth="400.0" prefHeight="200.0" prefWidth="400.0" promptText="il tuo testo" style="-fx-border-color: transparent; -fx-background-color: transparent;" styleClass="TextAreaPost" wrapText="true">
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </TextArea>
+                                    <Button mnemonicParsing="false" onAction="#handleChoosePhoto" style="-fx-background-color: #26282b;" text="scegli una foto" />
+                                    <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0">
+                                       <children>
+                                          <Label fx:id="path" prefHeight="26.0" prefWidth="413.0" style="-fx-background-color: #26282b; -fx-background-radius: 10;" text="path..">
+                                             <padding>
+                                                <Insets left="10.0" right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <Button mnemonicParsing="false" onAction="#deletePath" text="elimina" />
+                                       </children>
+                                    </HBox>
+                                    <Button mnemonicParsing="false" onAction="#handleuploadPost" style="-fx-background-color: #26282b; -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" text="Pubblica" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="40.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="createGroup" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #26282b;" visible="false">
+                           <children>
+                              <AnchorPane maxHeight="114.0" prefHeight="57.0" prefWidth="750.0">
+                                 <children>
+                                    <Button layoutX="8.0" layoutY="-3.0" mnemonicParsing="false" onAction="#goback" text="&lt;-" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="10.0" />
+                                 </children>
+                              </AnchorPane>
+                              <Label style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="Crea un gruppo">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="30.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                              <TextField fx:id="groupName" maxWidth="300.0" prefHeight="31.0" prefWidth="670.0" promptText="Nome" />
+                              <TextField fx:id="groupCategory" maxWidth="300.0" promptText="Categoria" />
+                              <TextArea fx:id="groupDescription" maxWidth="400.0" prefHeight="200.0" prefWidth="200.0" promptText="Una breve descrizione..." style="-fx-background-color: transparent;" wrapText="true">
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </TextArea>
+                              <Button mnemonicParsing="false" onAction="#selectGroupImage" prefHeight="31.0" prefWidth="215.0" text="seleziona immagine" />
+                              <Label fx:id="groupPicPath" alignment="CENTER" prefHeight="28.0" prefWidth="490.0" style="-fx-text-fill: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-background-radius: 10;" text="path..." />
+                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#deleteFilePath" style="-fx-background-color: transparent;" text="elimina">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Button>
+                              <Label fx:id="errorMessage" alignment="CENTER" prefHeight="20.0" prefWidth="630.0" style="-fx-text-fill: orangered;" />
+                              <Button mnemonicParsing="false" onAction="#createGroup" prefHeight="43.0" prefWidth="123.0" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="Crea" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="homePanel" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #26282b;">
+                           <children>
+                              <Label style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="UninaSocialGroup">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label text=" Il social network ufficiale dell'università Federico Secondo!" textAlignment="CENTER" wrapText="true">
+                                 <VBox.margin>
+                                    <Insets bottom="40.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label fx:id="greetLabel" text="Ciao, Francesco ">
+                                 <VBox.margin>
+                                    <Insets bottom="20.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <HBox alignment="CENTER" maxHeight="3.0" prefHeight="15.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Dai un' occhiata a come stanno andando i " />
+                                    <Button mnemonicParsing="false" onAction="#showReportPanel" prefHeight="31.0" prefWidth="129.0" style="-fx-background-color: transparent; -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="tuoi gruppi" textAlignment="CENTER">
+                                       <HBox.margin>
+                                          <Insets left="-20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
+                              <Label text="oppure" />
+                              <Label text="esplora tra quelli creati dai tuoi colleghi!" />
+                              <Label text="Link utili:">
+                                 <VBox.margin>
+                                    <Insets top="40.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Hyperlink onAction="#segrepass" text="Segrepass" />
+                              <Hyperlink onAction="#docentiUnina" text="Docenti Unina" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="reportPanel" alignment="CENTER" prefHeight="685.0" prefWidth="793.0" style="-fx-background-color: #26282b;" visible="false">
+                           <children>
+                              <Button onAction="#showHomePanel" style="-fx-background-color: transparent;" text="home" />
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label prefHeight="29.0" prefWidth="492.0" text="Report dei tuoi gruppi">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10.0">
+                                       <children>
+                                          <Label text="seleziona un mese" />
+                                          <ChoiceBox fx:id="monthChoice" prefWidth="150.0" style="-fx-background-color: rgba(255, 255, 255, 0.1); -fx-background-radius: 20;" />
+                                       </children>
+                                    </VBox>
                                  </children>
                               </HBox>
+                              <TableView fx:id="reportTable" maxWidth="700.0" prefHeight="326.0" prefWidth="700.0" style="-fx-background-color: transparent; -fx-background-radius: 20;">
+                                 <columns>
+                                    <TableColumn fx:id="groupNameColumn" prefWidth="133.0" text="Nome" />
+                                    <TableColumn fx:id="mostLikedColumn" prefWidth="139.0" text="Post migliori" />
+                                    <TableColumn fx:id="lessLikedColumn" prefWidth="139.0" text="Post peggiori" />
+                                    <TableColumn fx:id="mostCommentsColumn" prefWidth="196.0" text="più commentato" />
+                                    <TableColumn fx:id="lessCommentsColumn" prefWidth="186.0" text="meno commentato" />
+                                    <TableColumn fx:id="averagePostNumber" prefWidth="167.0" text="N. medio di post" />
+                                 </columns>
+                              </TableView>
                            </children>
-                           <HBox.margin>
-                              <Insets left="15.0" />
-                           </HBox.margin>
                         </VBox>
                      </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
-                  <ScrollPane fx:id="centerScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="677.0" prefWidth="601.0" style="-fx-background-color: black;" styleClass="viewport-style" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                     <content>
-                        <VBox alignment="TOP_CENTER" fillWidth="false" prefWidth="930.0" spacing="10.0">
-                           <padding>
-                              <Insets left="10.0" right="10.0" top="5.0" />
-                           </padding>
-                           <children>
-                              <VBox alignment="CENTER" fillWidth="false" prefHeight="297.0" prefWidth="590.0" VBox.vgrow="NEVER">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT" maxWidth="457.0" minWidth="366.0" prefHeight="66.0" prefWidth="457.0" style="-fx-background-radius: 24 24 0 0; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 26 26 0 0;">
-                                       <children>
-                                          <Rectangle fx:id="proPic2" arcHeight="60.0" arcWidth="60.0" height="40.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="40.0">
-                                             <HBox.margin>
-                                                <Insets left="10.0" />
-                                             </HBox.margin>
-                                          </Rectangle>
-                                          <Label prefHeight="52.0" prefWidth="255.0" text="nomeUtente">
-                                             <HBox.margin>
-                                                <Insets left="10.0" />
-                                             </HBox.margin>
-                                             <font>
-                                                <Font size="22.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                       <padding>
-                                          <Insets left="4.0" />
-                                       </padding>
-                                    </HBox>
-                                    <TextArea editable="false" prefHeight="189.0" prefWidth="457.0" style="-fx-background-color: grey;" text="weeewoifhewm9gwmepvwh" />
-                                    <HBox alignment="CENTER_LEFT" layoutX="137.0" layoutY="24.0" minWidth="366.0" prefHeight="66.0" prefWidth="457.0" spacing="20.0" style="-fx-background-radius: 0 0 24 24; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 0 0 26 26;">
-                                       <padding>
-                                          <Insets left="4.0" />
-                                       </padding>
-                                       <children>
-                                          <Button mnemonicParsing="false" text="&lt;3" />
-                                          <Button mnemonicParsing="false" text="..." />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER" fillWidth="false" layoutX="53.0" layoutY="15.0" prefHeight="297.0" prefWidth="590.0">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT" maxWidth="457.0" minWidth="366.0" prefHeight="66.0" prefWidth="457.0" style="-fx-background-radius: 24 24 0 0; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 26 26 0 0;">
-                                       <children>
-                                          <Rectangle fx:id="proPic22" arcHeight="60.0" arcWidth="60.0" height="40.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="40.0">
-                                             <HBox.margin>
-                                                <Insets left="10.0" />
-                                             </HBox.margin>
-                                          </Rectangle>
-                                          <Label prefHeight="52.0" prefWidth="255.0" text="nomeUtente">
-                                             <HBox.margin>
-                                                <Insets left="10.0" />
-                                             </HBox.margin>
-                                             <font>
-                                                <Font size="22.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                       <padding>
-                                          <Insets left="4.0" />
-                                       </padding>
-                                    </HBox>
-                                    <TextArea editable="false" prefHeight="189.0" prefWidth="457.0" style="-fx-background-color: grey;" text="weeewoifhewm9gwmepvwh" />
-                                    <HBox alignment="CENTER_LEFT" layoutX="137.0" layoutY="24.0" minWidth="366.0" prefHeight="66.0" prefWidth="457.0" spacing="20.0" style="-fx-background-radius: 0 0 24 24; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 0 0 26 26;">
-                                       <padding>
-                                          <Insets left="4.0" />
-                                       </padding>
-                                       <children>
-                                          <Button mnemonicParsing="false" text="&lt;3" />
-                                          <Button mnemonicParsing="false" text="..." />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER" fillWidth="false" layoutX="53.0" layoutY="322.0" prefHeight="297.0" prefWidth="590.0">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT" maxWidth="457.0" minWidth="366.0" prefHeight="66.0" prefWidth="457.0" style="-fx-background-radius: 24 24 0 0; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 26 26 0 0;">
-                                       <children>
-                                          <Rectangle fx:id="proPic221" arcHeight="60.0" arcWidth="60.0" height="40.0" style="-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;" width="40.0">
-                                             <HBox.margin>
-                                                <Insets left="10.0" />
-                                             </HBox.margin>
-                                          </Rectangle>
-                                          <Label prefHeight="52.0" prefWidth="255.0" text="nomeUtente">
-                                             <HBox.margin>
-                                                <Insets left="10.0" />
-                                             </HBox.margin>
-                                             <font>
-                                                <Font size="22.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                       <padding>
-                                          <Insets left="4.0" />
-                                       </padding>
-                                    </HBox>
-                                    <TextArea editable="false" prefHeight="189.0" prefWidth="457.0" style="-fx-background-color: grey;" text="weeewoifhewm9gwmepvwh" />
-                                    <HBox alignment="CENTER_LEFT" layoutX="137.0" layoutY="24.0" minWidth="366.0" prefHeight="66.0" prefWidth="457.0" spacing="20.0" style="-fx-background-radius: 0 0 24 24; -fx-border-color: rgba(224, 224, 224, 0.2); -fx-background-color: #1b1d1f; -fx-border-radius: 0 0 26 26;">
-                                       <padding>
-                                          <Insets left="4.0" />
-                                       </padding>
-                                       <children>
-                                          <Button mnemonicParsing="false" text="&lt;3" />
-                                          <Button mnemonicParsing="false" text="..." />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
+                  </StackPane>
                </children>
             </VBox>
          </children>
       </VBox>
    </center>
    <right>
-      <StackPane fx:id="rightStackPane" minWidth="35.0" prefHeight="788.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="rightVBox" alignment="CENTER" prefHeight="703.0" prefWidth="157.0" style="-fx-border-color: black; -fx-border-width: 0.5;" BorderPane.alignment="CENTER">
          <children>
-            <VBox fx:id="rightVBox" alignment="CENTER_LEFT" minWidth="30.0" prefHeight="788.0" spacing="10.0" style="-fx-background-radius: 15 0 0 15; -fx-border-radius: 15 0 0 15; -fx-background-color: #1b1d1f; -fx-border-color: black; -fx-border-width: 1px;">
+            <VBox minHeight="30.0" prefHeight="437.0" prefWidth="157.0">
+               <Button fx:id="togglebutton" mnemonicParsing="false" onAction="#toggleVBox" prefHeight="31.0" prefWidth="187.0" style="-fx-background-color: transparent;">
+                  <graphic>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                           <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-toggle-on" iconSize="20" />-->
+                           <Label text="Impostazioni" />
+                        </children>
+                     </HBox>
+                  </graphic>
+               </Button>
+            </VBox>
+            <VBox alignment="CENTER_LEFT" minWidth="20.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <ImageView />
-                        <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="home">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="321.0">
-                     <children>
-                        <ImageView />
-                        <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="profilo">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="341.0">
-                     <children>
-                        <ImageView />
-                        <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: transparent;" text="statistiche">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="361.0">
-                     <children>
-                        <ImageView />
-                        <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="preferenze">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#showHomePanel" prefHeight="31.0" prefWidth="153.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-home" iconSize="20" />-->
+                              <Label text="home" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
+                  <Button alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="190.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-user" iconSize="20" />-->
+                              <Label text="profilo" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showReportPanel" prefHeight="31.0" prefWidth="147.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-chart-bar" iconSize="20" />-->
+                              <Label text="statistiche" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="204.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <!-- <FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-cog" iconSize="20" />-->
+                              <Label text="preferenze" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
                </children>
                <opaqueInsets>
                   <Insets />
@@ -296,15 +334,21 @@
                   <Insets left="5.0" />
                </padding>
             </VBox>
-            <AnchorPane minWidth="30.0" prefHeight="200.0">
+            <VBox alignment="BOTTOM_LEFT" minHeight="30.0" prefHeight="437.0" prefWidth="157.0">
                <children>
-                  <Button fx:id="toggleButton" mnemonicParsing="false" onAction="#toggleVBox" text="impostazioni" />
+                  <Button fx:id="newPostButton" mnemonicParsing="false" onAction="#showCreatePost" prefHeight="31.0" prefWidth="162.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-plus-square" iconSize="20" />-->
+                              <Label text="nuovo post" />
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </Button>
                </children>
-               <StackPane.margin>
-                  <Insets left="3.0" top="10.0" />
-               </StackPane.margin>
-            </AnchorPane>
+            </VBox>
          </children>
-      </StackPane>
+      </VBox>
    </right>
 </BorderPane>

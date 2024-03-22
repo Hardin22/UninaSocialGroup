@@ -1,5 +1,6 @@
 package it.uninaSocialGroup.Controllers;
 
+import it.uninaSocialGroup.DAO.UserDAO;
 import it.uninaSocialGroup.DAO.GroupDAO;
 import it.uninaSocialGroup.DAO.GroupMemberDAO;
 import it.uninaSocialGroup.DAO.PostDAO;
@@ -8,10 +9,16 @@ import it.uninaSocialGroup.DAO.LikeDAO;
 import it.uninaSocialGroup.Oggetti.Group;
 import it.uninaSocialGroup.Oggetti.User;
 import it.uninaSocialGroup.Oggetti.Post;
+import it.uninaSocialGroup.Oggetti.MonthlyReport;
+import it.uninaSocialGroup.DAO.ReportDAO;
 import it.uninaSocialGroup.Oggetti.Comment;
 import it.uninaSocialGroup.Utils.DBUtil;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.css.PseudoClass;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -22,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -34,9 +42,10 @@ import javafx.scene.layout.StackPane;
 import it.uninaSocialGroup.Utils.FileUploadUtility;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.util.ArrayList;
 import java.util.List;
 import  java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -59,14 +68,18 @@ public class globalController {
     private PostDAO postDAO;
     private CommentDAO commentDAO;
     private LikeDAO likeDAO;
+    private ReportDAO reportDAO;
+    private UserDAO UserDAO;
     public void setCurrentUser(User user) {
         this.currentUser = user;
         System.out.println(currentUser);
         connectToDatabase();
+        UserDAO = new UserDAO(connection);
         groupDAO = new GroupDAO(connection);
         groupMemberDAO = new GroupMemberDAO(connection);
         postDAO = new PostDAO(connection);
         commentDAO = new CommentDAO(connection);
+        reportDAO = new ReportDAO(connection);
         likeDAO = new LikeDAO(connection);
         showProfileOrGroupList(currentUser.getProfilePictureLink(), currentUser.getNomeUtente(), usernameAlto, proPic);
         getGroupsFromDatabaseAndDisplay();
@@ -96,6 +109,18 @@ public class globalController {
             });
             pause.playFromStart();
         });
+        monthChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
+            handleMonthSelection(newValue);
+            System.out.println(newValue);
+        });
+        groupNameColumn.setCellValueFactory(new PropertyValueFactory<>("groupName"));
+        mostLikedColumn.setCellValueFactory(new PropertyValueFactory<>("mostLikedPostContent"));
+        lessLikedColumn.setCellValueFactory(new PropertyValueFactory<>("leastLikedPostContent"));
+        mostCommentsColumn.setCellValueFactory(new PropertyValueFactory<>("mostCommentedPostContent"));
+        lessCommentsColumn.setCellValueFactory(new PropertyValueFactory<>("leastCommentedPostContent"));
+        averagePostNumber.setCellValueFactory(new PropertyValueFactory<>("averagePostsPerGroup"));
+
+
     }
 
     @FXML
@@ -268,6 +293,7 @@ public class globalController {
         reportPanel.setVisible(false);
         createGroup.setVisible(false);
         homePanel.setVisible(false);
+        profileView.setVisible(false);
         idActiveGroup = Integer.parseInt(buttonId);
         loadCentralComponent(buttonId);
         if (isCurrentUserMemberOfGroup(Integer.valueOf(buttonId))) {
@@ -415,6 +441,9 @@ public class globalController {
             commentsPic.setStyle("-fx-stroke: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%); -fx-stroke-width: 2px;");
             commentContent.setText(comment.getContent());
             showProfileOrGroupList(comment.getUserProfilePicture(), comment.getUsername(), commentUsername, commentsPic);
+
+            commentUsername.setOnMouseClicked(event -> showprofile(comment.getUsername()));
+
             commentsView.getChildren().add(commentComponent);
         } catch (IOException e) {
             e.printStackTrace();
@@ -462,6 +491,7 @@ public class globalController {
             mainviewVbox.getChildren().add(0, postComponent);
 
             showProfileOrGroupList(post.getUserProfilePicture(), post.getAuthorUsername(), authorName, authorPic);
+            authorName.setOnMouseClicked(event -> showprofile(post.getAuthorUsername()));
 
             if (post.getPostPicture() == null || post.getPostPicture().equals("")) {
                 postBox.getChildren().remove(postPic);
@@ -578,6 +608,7 @@ public class globalController {
                 Label label = new Label(member);
                 label.setPrefWidth(406);
                 groupInfo.getChildren().add(label);
+                label.setOnMouseClicked(event -> showprofile(label.getText()));
                 Separator separator = new Separator();
                 separator.setPrefWidth(300);
                 groupInfo.getChildren().add(separator);
@@ -662,6 +693,7 @@ public class globalController {
         reportPanel.setVisible(false);
         homePanel.setVisible(false);
         newPostButton.setVisible(false);
+        profileView.setVisible(false);
         createGroup.setVisible(true);
         if (centerVBox.getChildren().get(0) instanceof Button) {
             centerVBox.getChildren().remove(0);
@@ -743,6 +775,7 @@ public class globalController {
         reportPanel.setVisible(false);
         createGroup.setVisible(false);
         newPostButton.setVisible(false);
+        profileView.setVisible(false);
         homePanel.setVisible(true);
         if (centerVBox.getChildren().get(0) instanceof Button) {
             centerVBox.getChildren().remove(0);
@@ -771,11 +804,136 @@ public class globalController {
         homePanel.setVisible(false);
         createGroup.setVisible(false);
         reportPanel.setVisible(true);
+        profileView.setVisible(false);
         if (centerVBox.getChildren().get(0) instanceof Button) {
             centerVBox.getChildren().remove(0);
             mainviewVbox.getChildren().clear();
         }
     }
 
+    @FXML
+    private TableView<MonthlyReport> reportTable;
+    @FXML
+    private TableColumn<MonthlyReport, String> groupNameColumn;
+    @FXML
+    private TableColumn<MonthlyReport, String> mostLikedColumn;
+    @FXML
+    private TableColumn<MonthlyReport, String> lessLikedColumn;
+    @FXML
+    private TableColumn<MonthlyReport, String> mostCommentsColumn;
+    @FXML
+    private TableColumn<MonthlyReport, String> lessCommentsColumn;
+    @FXML
+    private TableColumn<MonthlyReport, Double> averagePostNumber;
+    @FXML
+    public void handleMonthSelection(String month) {
+        String admin = currentUser.getNomeUtente();
+        String monthNumber = monthToNumber(month);
 
+        // Ottieni i dati per ogni categoria dalle query
+        List<String> groupNames = reportDAO.getAdminGroups(admin, monthNumber);
+        ObservableList<MonthlyReport> reportItems = FXCollections.observableArrayList();
+        for (String groupName : groupNames) {
+            MonthlyReport report = new MonthlyReport();
+            report.setGroupName(groupName);
+            report.setMostLikedPostContent(reportDAO.getMostLikedPost(groupName, monthNumber));
+            report.setLeastLikedPostContent(reportDAO.getLeastLikedPost(groupName, monthNumber));
+            report.setMostCommentedPostContent(reportDAO.getMostCommentedPost(groupName, monthNumber));
+            report.setLeastCommentedPostContent(reportDAO.getLeastCommentedPost(groupName, monthNumber));
+            String averagePostsPerGroup = String.valueOf(reportDAO.getAveragePostsPerGroup(groupName, monthNumber));
+            report.setAveragePostsPerGroup(averagePostsPerGroup);
+            reportItems.add(report);
+        }
+
+        reportTable.setItems(reportItems);
+    }
+
+
+    public String monthToNumber(String month) {
+        String monthNumber;
+        switch (month.toLowerCase()) {
+            case "gennaio":
+                monthNumber = "2024-01";
+                break;
+            case "febbraio":
+                monthNumber = "2024-02";
+                break;
+            case "marzo":
+                monthNumber = "2024-03";
+                break;
+            case "aprile":
+                monthNumber = "2024-04";
+                break;
+            case "maggio":
+                monthNumber = "2024-05";
+                break;
+            case "giugno":
+                monthNumber = "2024-06";
+                break;
+            case "luglio":
+                monthNumber = "2024-07";
+                break;
+            case "agosto":
+                monthNumber = "2024-08";
+                break;
+            case "settembre":
+                monthNumber = "2024-09";
+                break;
+            case "ottobre":
+                monthNumber = "2024-10";
+                break;
+            case "novembre":
+                monthNumber = "2024-11";
+                break;
+            case "dicembre":
+                monthNumber = "2024-12";
+                break;
+            default:
+                monthNumber = "00";
+        }
+        return monthNumber;
+    }
+
+    @FXML
+    private VBox profileView;
+    @FXML
+    private Label profileName;
+    @FXML
+    private Label profileSurname;
+    @FXML
+    private Label profileEmail;
+    @FXML
+    private Label profileMatricola;
+    @FXML
+    private Label profileBirthDate;
+    @FXML
+    private Label profileUsername;
+    @FXML
+    private Rectangle profilePropic;
+
+    @FXML
+    private void showprofile(String name){
+        User user = UserDAO.getUserByUsername(name);
+
+        profileView.setVisible(true);
+        profileName.setText(user.getNome());
+        profileSurname.setText(user.getCognome());
+        profileEmail.setText(user.getEmail());
+        profileMatricola.setText(user.getMatricola());
+        profileBirthDate.setText(String.valueOf(user.getDataDiNascita()));
+        if (centerVBox.getChildren().get(0) instanceof Button){
+            VBox.setMargin(profileView, new Insets(0, 0, 80, 0));
+        }
+        showProfileOrGroupList(user.getProfilePictureLink(), user.getNomeUtente(), profileUsername, profilePropic);
+
+    }
+    @FXML
+    private void closeProfile(){
+        profileView.setVisible(false);
+    }
+
+
+    public void showprofile(ActionEvent actionEvent) {
+        showprofile(currentUser.getNomeUtente());
+    }
 }

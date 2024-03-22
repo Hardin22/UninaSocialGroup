@@ -17,7 +17,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<!--<?import org.kordamp.ikonli.javafx.*?>-->
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="703.0" prefWidth="1180.0" style="-fx-background-color: #1b1d1f;;" stylesheets="@../styles/root.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.uninaSocialGroup.Controllers.globalController">
    <left>
@@ -42,11 +43,11 @@
                               <Insets left="10.0" />
                            </StackPane.margin>
                         </TextField>
-                        <FontIcon iconLiteral="fas-search" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconSize="22">
+                        <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-search" iconSize="22">
                            <StackPane.margin>
                               <Insets right="10.0" />
                            </StackPane.margin>
-                        </FontIcon>
+                        </FontIcon>-->
 
                      </children>
                   </StackPane>
@@ -246,7 +247,7 @@
                         </VBox>
                         <VBox fx:id="reportPanel" alignment="CENTER" prefHeight="685.0" prefWidth="793.0" style="-fx-background-color: #26282b;" visible="false">
                            <children>
-                              <Button onAction="#showHomePanel" style="-fx-background-color: transparent;" text="home" />
+                              <Button alignment="TOP_LEFT" onAction="#showHomePanel" prefHeight="31.0" prefWidth="62.0" style="-fx-background-color: transparent;" text="home" visible="false" />
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Label prefHeight="29.0" prefWidth="492.0" text="Report dei tuoi gruppi">
@@ -262,16 +263,95 @@
                                     </VBox>
                                  </children>
                               </HBox>
-                              <TableView maxWidth="700.0" prefHeight="326.0" prefWidth="700.0" style="-fx-background-color: transparent; -fx-background-radius: 20;">
+                              <TableView fx:id="reportTable" maxWidth="1100.0" prefHeight="326.0" prefWidth="700.0" style="-fx-background-color: transparent; -fx-background-radius: 20;">
                                 <columns>
                                    <TableColumn fx:id="groupNameColumn" prefWidth="133.0" text="Nome" />
                                    <TableColumn fx:id="mostLikedColumn" prefWidth="139.0" text="Post migliori" />
                                    <TableColumn fx:id="lessLikedColumn" prefWidth="139.0" text="Post peggiori" />
-                                   <TableColumn fx:id="mostComentsColumn" prefWidth="196.0" text="più commentato" />
+                                   <TableColumn fx:id="mostCommentsColumn" prefWidth="196.0" text="più commentato" />
                                    <TableColumn fx:id="lessCommentsColumn" prefWidth="186.0" text="meno commentato" />
                                    <TableColumn fx:id="averagePostNumber" prefWidth="167.0" text="N. medio di post" />
                                 </columns>
+                                 <padding>
+                                    <Insets left="40.0" right="40.0" />
+                                 </padding>
                               </TableView>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="profileView" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" style="-fx-background-color: #26282b;" visible="false" StackPane.alignment="TOP_CENTER">
+                           <children>
+                              <AnchorPane prefHeight="20.0" prefWidth="793.0">
+                                 <children>
+                                    <Button onAction="#closeProfile" fx:id="back" layoutX="22.0" layoutY="6.0" mnemonicParsing="false" text="X" />
+                                 </children>
+                              </AnchorPane>
+                              <Rectangle fx:id="profilePropic" arcHeight="163.0" arcWidth="163.0" fill="DODGERBLUE" height="163.0" stroke="BLACK" strokeType="INSIDE" width="163.0" />
+                              <VBox alignment="TOP_CENTER" maxWidth="600.0" prefHeight="400.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #26282b; -fx-border-color: rgb(65, 67, 68); -fx-border-radius: 15px;">
+                                 <VBox.margin>
+                                    <Insets top="-60.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="profileUsername" style="-fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%);" text="">
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                       <padding>
+                                          <Insets top="10.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <HBox prefHeight="380.0" prefWidth="598.0">
+                                       <children>
+                                          <VBox maxHeight="247.0" prefHeight="247.0" prefWidth="379.0" spacing="20.0">
+                                             <children>
+                                                <Label styleClass="opaqueText" text="nome:" />
+                                                <Label fx:id="profileName" text="Francesco">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="opaqueText" text="email:" />
+                                                <Label fx:id="profileEmail" text="francesco.albano@studenti.unina.it">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="opaqueText" text="Data di nascita:" />
+                                                <Label fx:id="profileBirthDate"  text="">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <padding>
+                                                <Insets left="30.0" top="20.0" />
+                                             </padding>
+                                          </VBox>
+                                          <VBox maxHeight="200.0" prefHeight="349.0" prefWidth="306.0" spacing="20.0">
+                                             <children>
+                                                <Label styleClass="opaqueText" text="cognome:" />
+                                                <Label fx:id="profileSurname" text="">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label  styleClass="opaqueText" text="matricola:" />
+                                                <Label fx:id="profileMatricola" text="">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <padding>
+                                                <Insets left="30.0" top="20.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
                         </VBox>
                      </children>
@@ -289,7 +369,7 @@
                   <graphic>
                      <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <children>
-                           <FontIcon iconLiteral="fas-toggle-on" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                           <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-toggle-on" iconSize="20" />-->
                            <Label text="Impostazioni" />
                         </children>
                      </HBox>
@@ -302,17 +382,17 @@
                      <graphic>
                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
-                              <FontIcon iconLiteral="fas-home" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-home" iconSize="20" />-->
                               <Label text="home" />
                            </children>
                         </HBox>
                      </graphic>
                   </Button>
-                  <Button alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="190.0" style="-fx-background-color: transparent;">
+                  <Button onAction="#showprofile" alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="190.0" style="-fx-background-color: transparent;">
                      <graphic>
                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
-                              <FontIcon iconLiteral="fas-user" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-user" iconSize="20" />-->
                               <Label text="profilo" />
                            </children>
                         </HBox>
@@ -322,7 +402,7 @@
                      <graphic>
                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
-                              <FontIcon iconLiteral="fas-chart-bar" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
+                              <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-chart-bar" iconSize="20" />-->
                               <Label text="statistiche" />
                            </children>
                         </HBox>
@@ -332,35 +412,35 @@
                      <graphic>
                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
-                              <FontIcon iconLiteral="fas-cog" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
-                              <Label text="preferenze" />
-                           </children>
-                        </HBox>
-                     </graphic>
-                  </Button>
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="5.0" />
-               </padding>
-            </VBox>
-            <VBox alignment="BOTTOM_LEFT" minHeight="30.0" prefHeight="437.0" prefWidth="157.0">
-               <children>
-                  <Button fx:id="newPostButton" mnemonicParsing="false" onAction="#showCreatePost" prefHeight="31.0" prefWidth="162.0" style="-fx-background-color: transparent;">
-                     <graphic>
-                        <HBox alignment="CENTER_LEFT" spacing="10.0">
-                           <children>
-                              <FontIcon iconLiteral="fas-plus-square" iconSize="20" iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" />
-                              <Label text="nuovo post" />
-                           </children>
-                        </HBox>
-                     </graphic>
-                  </Button>
-               </children>
-            </VBox>
-         </children>
-      </VBox>
-   </right>
-</BorderPane>
+                              <!-- <FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-cog" iconSize="20" />-->
+                               <Label text="preferenze" />
+                            </children>
+                         </HBox>
+                      </graphic>
+                   </Button>
+                </children>
+                <opaqueInsets>
+                   <Insets />
+                </opaqueInsets>
+                <padding>
+                   <Insets left="5.0" />
+                </padding>
+             </VBox>
+             <VBox alignment="BOTTOM_LEFT" minHeight="30.0" prefHeight="437.0" prefWidth="157.0">
+                <children>
+                   <Button fx:id="newPostButton" mnemonicParsing="false" onAction="#showCreatePost" prefHeight="31.0" prefWidth="162.0" style="-fx-background-color: transparent;">
+                      <graphic>
+                         <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                               <!--<FontIcon iconColor="linear-gradient(from 0% 0% to 100% 100%, rgb(61, 237, 253) 44.2%, rgb(3, 136, 238) 95.6%)" iconLiteral="fas-plus-square" iconSize="20" />-->
+                               <Label text="nuovo post" />
+                            </children>
+                         </HBox>
+                      </graphic>
+                   </Button>
+                </children>
+             </VBox>
+          </children>
+       </VBox>
+    </right>
+ </BorderPane>

@@ -219,3 +219,48 @@
     -fx-border-radius: 0px;
     -fx-background-color: #131313;
 }
+.table-view {
+    -fx-background-color: #1b1d1f;
+    -fx-text-fill: #E0E0E0;
+    -fx-border-color: transparent;
+}
+.table-row-cell:even {
+    -fx-background-color: black;
+}
+.table-row-cell:odd {
+    -fx-background-color: grey;
+}
+.table-view .table-row-cell:odd {
+    -fx-background-color: #1b1d1f;
+    -fx-text-fill: #E0E0E0;
+}
+.table-view .table-row-cell:even {
+    -fx-background-color: #26282b;
+    -fx-text-fill: #E0E0E0;
+}
+.table-view .column-header-background {
+    -fx-background-color: #1b1d1f;
+    -fx-text-fill: #E0E0E0;
+}
+.table-view .column-header {
+    -fx-background-color: #1b1d1f;
+    -fx-text-fill: #E0E0E0;
+}
+.table-view .scroll-bar:horizontal {
+    -fx-max-height: 0;
+}
+.table-view .scroll-bar:horizontal, .table-view .scroll-bar:vertical {
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+}
+.table-view .table-row-cell {
+    -fx-text-fill: #E0E0E0; /* Cambia "black" con il colore desiderato */
+}
+.table-view {
+    -fx-background-radius: 10; /* Imposta il raggio desiderato */
+    -fx-border-radius: 10; /* Imposta il raggio desiderato */
+}
+.opaqueText{
+    -fx-text-fill: rgba(224, 224, 224, 0.7);
+}
+
